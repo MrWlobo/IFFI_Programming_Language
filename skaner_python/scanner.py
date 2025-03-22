@@ -1,10 +1,16 @@
+from colorama import init, Fore
+init()
+
 class Token:
+
+    token_colors = {"IDENTIFIER": Fore.RED, "INTEGER": Fore.BLUE, "BRACKET": Fore.GREEN, "OPERATION": Fore.YELLOW}
+
     def __init__(self, token_id, token_value):
         self.token_id = token_id
         self.token_value = token_value
 
     def __repr__(self):
-        return f"{self.token_id} : {self.token_value}"
+        return f"{self.token_colors[self.token_id]}{self.token_id} : {self.token_value}{Fore.RESET}"
 
 
 class Scanner:
@@ -50,7 +56,7 @@ class Scanner:
         if expression[self.index].isspace():
             self.scan_whitespace(expression)
 
-        elif expression[self.index].isalpha() or expression[self.index] == "_":  # When letter or _ - identifier
+        if expression[self.index].isalpha() or expression[self.index] == "_":  # When letter or _ - identifier
             return self.scan_identifier(expression)
 
         elif expression[self.index].isdigit():  # When digit - integer
