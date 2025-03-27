@@ -1,0 +1,44 @@
+LOOP WHILE (a != b):
+  a += 1;
+POOL
+
+IF (x < y):
+    doSomething();
+ELSE IF (x > y):
+    doSomethingElse();
+ELSE:
+    doNothing();
+FI
+
+LOOP FOR (i IN (1,10)):
+    makeSandwich(i);
+POOL
+
+LOOP DO:
+    a = a + 1;
+    WHILE (a != 10)
+POOL
+
+DataTypes: INT, FLOAT, DOUBLE, BOOL, CHAR, STRING
+Data Structures:
+    - ARRAY[type, size]
+    - LIST[type]
+    - MAP[keyType, valueType]
+    - TUPLE[type1, type2, ...]
+
+FUNC functionName(arg1: argType, arg2: argType) -> returnType:
+    function body;
+CUNF
+
+
+TRY:
+    doSomething();
+CATCH (ex):
+    handleException();
+FINALLY:
+    finish();
+YRT
+
+
+
+
