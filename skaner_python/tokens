@@ -1,0 +1,96 @@
+Token types:
+1. Keywords
+2. Identifiers
+3. Operators
+4. Punctuators
+
+
+1. Keywords
+- Basic data types
+    -INT
+    -FLOAT
+    -DOUBLE
+    -BOOL
+    -CHAR
+    -STRING
+
+-Advanced data types / Data structures
+    -ARRAY
+    -LIST
+    -MAP
+    -TUPLE
+    -TREE ? maybe
+    -HEAP ? maybe
+
+- Loops
+    -LOOP
+    -POOL
+    -WHILE
+    -DO
+    -FOR
+
+- If statements
+    -IF
+    -FI
+    -ELSE
+    -ELSE IF ? osobny token czy ELSE + IF ?
+
+- Functions
+    -FUNC
+    -CUNF
+
+- Handling errors
+    -TRY
+    -YRT
+    -CATCH
+    -FINALLY
+
+2. Identifiers
+- Can start with any letter or _
+- Numbers 0-9 can be parts of an identifier except for the first character
+- Case matters (var != Var)
+- No special characters other than _ can be used
+- No length restrictions
+- Can't be the same as keyword
+
+3. Operators
+- Arithmetic operators
+    - (+) - adds numbers on both sides of the equation
+    - (-) - subtracts the number on the right side of the equation from the one on the left
+    - (*) - multiplies numbers on both sides of the equation
+    - (/) - divides number on the left side of the equation by the number on the right
+    - (//) - same as above, but returns integer
+    - (**) - raises the number on the left to the power of the number on the right
+    - (++) - increments the number on the left
+    - (--) - decrements the number on the right
+    - (%) - the remainder of dividing operand on the left by the operand on the right
+
+- Comparison operators
+    - (==) - checks if operands on both sides are equal
+    - (!=) - checks if operands on both sides are different
+    - (>) - checks if operand on the left is bigger than the one on the right
+    - (<) - checks if the operand on the left is smaller than the operand on the right
+    - (>=) - checks if the operand on the left is larger or equal to the one on the right
+    - (<=) - checks if the operand on the left is smaller or equal to the one on the right
+
+- Logic operators
+    - AND - logical and of operands on both sides
+    - OR - logical or operands on both sides
+    - NOT - logical not of the operand on the right
+
+- Assignment operators
+    - += assigns the result of (+) operation on variable on the left and operand on the right to the variable on the left
+    - -= assigns the result of (-) operation on variable on the left and operand on the right to the variable on the left
+    - *= assigns the result of (*) operation on variable on the left and operand on the right to the variable on the left
+    - /= assigns the result of (/) operation on variable on the left and operand on the right to the variable on the left
+
+
+4. Punctuators
+- (,) - separates function arguments and variables in data structures
+- (=) - assigns value to variable
+- (#) - one line comment
+- (:) - ends block instructions (ifs, loops, function declarations, error handling), used in function declaration to provide the type of a variable
+- (->) - used to declare the return type of a function
+- (;) - finishes the instruction
+- ([, ]) - used to declare advanced data types
+
