@@ -39,6 +39,14 @@ FINALLY:
     finish();
 YRT
 
+CLASS className:
 
+    INT num;
+    STRING name;
+
+    FUNC printName() -> VOID:
+        PRINT(SELF.name);
+    CUNF
+SSLAC
 
 
