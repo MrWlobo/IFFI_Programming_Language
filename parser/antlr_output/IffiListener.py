@@ -17,6 +17,42 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#statement.
+    def enterStatement(self, ctx:IffiParser.StatementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#statement.
+    def exitStatement(self, ctx:IffiParser.StatementContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#assignment.
+    def enterAssignment(self, ctx:IffiParser.AssignmentContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#assignment.
+    def exitAssignment(self, ctx:IffiParser.AssignmentContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#if_statement.
+    def enterIf_statement(self, ctx:IffiParser.If_statementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#if_statement.
+    def exitIf_statement(self, ctx:IffiParser.If_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#block.
+    def enterBlock(self, ctx:IffiParser.BlockContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#block.
+    def exitBlock(self, ctx:IffiParser.BlockContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#expr.
     def enterExpr(self, ctx:IffiParser.ExprContext):
         pass
