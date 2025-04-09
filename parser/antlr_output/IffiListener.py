@@ -26,6 +26,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#declaration.
+    def enterDeclaration(self, ctx:IffiParser.DeclarationContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#declaration.
+    def exitDeclaration(self, ctx:IffiParser.DeclarationContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#assignment.
     def enterAssignment(self, ctx:IffiParser.AssignmentContext):
         pass
@@ -44,6 +53,24 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#while_loop.
+    def enterWhile_loop(self, ctx:IffiParser.While_loopContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#while_loop.
+    def exitWhile_loop(self, ctx:IffiParser.While_loopContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#do_while_loop.
+    def enterDo_while_loop(self, ctx:IffiParser.Do_while_loopContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#do_while_loop.
+    def exitDo_while_loop(self, ctx:IffiParser.Do_while_loopContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#block.
     def enterBlock(self, ctx:IffiParser.BlockContext):
         pass
@@ -59,6 +86,24 @@ class IffiListener(ParseTreeListener):
 
     # Exit a parse tree produced by IffiParser#expr.
     def exitExpr(self, ctx:IffiParser.ExprContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#basic_data_type.
+    def enterBasic_data_type(self, ctx:IffiParser.Basic_data_typeContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#basic_data_type.
+    def exitBasic_data_type(self, ctx:IffiParser.Basic_data_typeContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#advanced_data_types.
+    def enterAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#advanced_data_types.
+    def exitAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
         pass
 
 

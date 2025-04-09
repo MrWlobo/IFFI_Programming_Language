@@ -3,14 +3,29 @@ grammar Iffi;
 start_ : statement* EOF;
 
 statement
-    : assignment
+    : declaration
+    | assignment
     | if_statement
+    | while_loop
+    | do_while_loop
+    ;
+
+declaration
+    : basic_data_type ID ('=' expr)? ';'
     ;
 
 assignment : ID '=' expr ';' ;
 
 if_statement
     : IF '(' expr ')' ':' block (ELIF '(' expr ')' ':' block)* (ELSE ':' block)? FI
+    ;
+
+while_loop
+    : LOOP WHILE '(' expr ')' ':' block POOL
+    ;
+
+do_while_loop
+    : LOOP DO ':' block WHILE '(' expr ')' POOL
     ;
 
 block : statement+ ;
@@ -30,11 +45,38 @@ expr
     | '(' expr ')'
     ;
 
-//Keywords
+// Keywords
+
+// Basic data types
+basic_data_type
+    : 'int'
+    | 'float'
+    | 'double'
+    | 'bool'
+    | 'char'
+    | 'string'
+    ;
+
+// Advanced data types
+advanced_data_types
+    : 'array'
+    | 'list'
+    | 'map'
+    | 'tuple'
+    ;
+
+// If statements
 IF: 'if';
 FI: 'fi';
 ELIF: 'elif';
 ELSE: 'else';
+
+// Loops
+LOOP: 'loop';
+POOL: 'pool';
+FOR: 'for';
+WHILE: 'while';
+DO: 'do';
 
 
 atom

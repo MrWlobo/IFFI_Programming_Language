@@ -19,6 +19,11 @@ class IffiVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by IffiParser#declaration.
+    def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by IffiParser#assignment.
     def visitAssignment(self, ctx:IffiParser.AssignmentContext):
         return self.visitChildren(ctx)
@@ -29,6 +34,16 @@ class IffiVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by IffiParser#while_loop.
+    def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by IffiParser#do_while_loop.
+    def visitDo_while_loop(self, ctx:IffiParser.Do_while_loopContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by IffiParser#block.
     def visitBlock(self, ctx:IffiParser.BlockContext):
         return self.visitChildren(ctx)
@@ -36,6 +51,16 @@ class IffiVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by IffiParser#expr.
     def visitExpr(self, ctx:IffiParser.ExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by IffiParser#basic_data_type.
+    def visitBasic_data_type(self, ctx:IffiParser.Basic_data_typeContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by IffiParser#advanced_data_types.
+    def visitAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
         return self.visitChildren(ctx)
 
 

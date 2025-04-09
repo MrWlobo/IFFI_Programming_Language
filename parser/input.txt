@@ -11,3 +11,13 @@ else:
         y = true;
     fi
 fi
+
+loop while (6 > 0):
+    int v = 9;
+    string j3 =7.2;
+pool
+
+loop do:
+    char b = 7823;
+    while (2 ** 7)
+pool
