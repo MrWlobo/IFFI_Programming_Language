@@ -10,6 +10,7 @@ statement
     | while_loop
     | do_while_loop
     | function
+    | function_call
     ;
 
 declaration
@@ -45,6 +46,10 @@ function
 
 argument
     : ID ':' (basic_data_type | advanced_data_type)
+    ;
+
+function_call
+    : ID '(' ((ID | atom | data_structure) (',' (ID | atom | data_structure))*)? ')' ';'
     ;
 
 block : statement+ ;
@@ -120,9 +125,9 @@ atom
     | BOOL
     ;
 
-INT   : [+-]?[0-9]+ ;
-FLOAT : [+-]?([0-9]*[.])?[0-9]+ ;
-DOUBLE : [+-]?([0-9]*[.])?[0-9]+ ;
-ID    : [a-zA-Z_][a-zA-Z_0-9]* ;
-BOOL  : 'true' | 'false' ;
-WS    : [ \t\n\r]+ -> skip ;
+INT: [+-]?[0-9]+ ;
+FLOAT: [+-]?([0-9]*[.])?[0-9]+ ;
+DOUBLE: [+-]?([0-9]*[.])?[0-9]+ ;
+ID: [a-zA-Z_][a-zA-Z_0-9]* ;
+BOOL: 'true' | 'false' ;
+WS: [ \t\n\r]+ -> skip ;

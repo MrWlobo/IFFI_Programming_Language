@@ -98,6 +98,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#function_call.
+    def enterFunction_call(self, ctx:IffiParser.Function_callContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#function_call.
+    def exitFunction_call(self, ctx:IffiParser.Function_callContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#block.
     def enterBlock(self, ctx:IffiParser.BlockContext):
         pass

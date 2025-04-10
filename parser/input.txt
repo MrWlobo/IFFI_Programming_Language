@@ -32,3 +32,5 @@ cunf
 loop for (int i in [1, 2, 3, 4, 5]):
     int f = 9;
 pool
+
+test_function(ggg, 12, [1, 5, 6]);
