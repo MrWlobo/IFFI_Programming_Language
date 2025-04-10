@@ -9,7 +9,6 @@ Token types:
 - Basic data types
     -INT
     -FLOAT
-    -DOUBLE
     -BOOL
     -CHAR
     -STRING
@@ -37,7 +36,7 @@ Token types:
 
 - Functions
     -FUNC
-    -CUNF
+    -CNUF
 
 - Handling errors
     -TRY
