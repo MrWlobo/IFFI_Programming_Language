@@ -28,3 +28,7 @@ func some_Name(arg1: int, fdf: char) -> void
         float op43 = 34;
      fi
 cunf
+
+loop for (int i in [1, 2, 3, 4, 5]):
+    int f = 9;
+pool
