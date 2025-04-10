@@ -75,9 +75,9 @@ Kompilator języka IFFI do C
 | `LESS_EQUAL`      | mniejsze/równe          | `<=`     |
 | `GREATER_THAN`    | większe                 | `>`      |
 | `GREATER_EQUAL`   | większe/równe           | `>=`     |
-| `AND`             | operator logiczny "i"   | `AND`    |
-| `OR`              | operator logiczny "lub" | `OR`     |
-| `NOT`             | operator logiczny "nie" | `NOT`    |
+| `AND`             | operator logiczny "AND" | `AND`    |
+| `OR`              | operator logiczny "OR"  | `OR`     |
+| `NOT`             | operator logiczny "NOT" | `NOT`    |
 | `ASSIGN`          | przypisanie             | `=`      |
 | `ASSIGN_PLUS`     | przypisanie dodawania   | `+=`     |
 | `ASSIGN_MINUS`    | przypisanie odejmowania | `-=`     |
