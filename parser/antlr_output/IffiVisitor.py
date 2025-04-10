@@ -60,7 +60,7 @@ class IffiVisitor(ParseTreeVisitor):
 
 
     # Visit a parse tree produced by IffiParser#advanced_data_types.
-    def visitAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
+    def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
         return self.visitChildren(ctx)
 
 

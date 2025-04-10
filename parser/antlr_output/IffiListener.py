@@ -71,6 +71,24 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#function.
+    def enterFunction(self, ctx:IffiParser.FunctionContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#function.
+    def exitFunction(self, ctx:IffiParser.FunctionContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#argument.
+    def enterArgument(self, ctx:IffiParser.ArgumentContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#argument.
+    def exitArgument(self, ctx:IffiParser.ArgumentContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#block.
     def enterBlock(self, ctx:IffiParser.BlockContext):
         pass
@@ -98,12 +116,12 @@ class IffiListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by IffiParser#advanced_data_types.
-    def enterAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
+    # Enter a parse tree produced by IffiParser#advanced_data_type.
+    def enterAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
         pass
 
-    # Exit a parse tree produced by IffiParser#advanced_data_types.
-    def exitAdvanced_data_types(self, ctx:IffiParser.Advanced_data_typesContext):
+    # Exit a parse tree produced by IffiParser#advanced_data_type.
+    def exitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
         pass
 
 

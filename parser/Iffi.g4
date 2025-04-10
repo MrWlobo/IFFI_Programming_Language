@@ -8,6 +8,7 @@ statement
     | if_statement
     | while_loop
     | do_while_loop
+    | function
     ;
 
 declaration
@@ -26,6 +27,14 @@ while_loop
 
 do_while_loop
     : LOOP DO ':' block WHILE '(' expr ')' POOL
+    ;
+
+function
+    : FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block CUNF
+    ;
+
+argument
+    : ID ':' (basic_data_type | advanced_data_type)
     ;
 
 block : statement+ ;
@@ -58,12 +67,15 @@ basic_data_type
     ;
 
 // Advanced data types
-advanced_data_types
+advanced_data_type
     : 'array'
     | 'list'
     | 'map'
     | 'tuple'
     ;
+
+// Void
+VOID: 'void';
 
 // If statements
 IF: 'if';
@@ -78,6 +90,9 @@ FOR: 'for';
 WHILE: 'while';
 DO: 'do';
 
+// Functions
+FUNC: 'func';
+CUNF: 'cunf';
 
 atom
     : INT

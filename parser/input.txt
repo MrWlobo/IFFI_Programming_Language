@@ -21,3 +21,10 @@ loop do:
     char b = 7823;
     while (2 ** 7)
 pool
+
+func some_Name(arg1: int, fdf: char) -> void
+    int rrr = 9;
+    if (4 ** 5 > 8 ** 2):
+        float op43 = 34;
+     fi
+cunf
