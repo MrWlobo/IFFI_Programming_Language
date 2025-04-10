@@ -245,27 +245,5 @@ WS    : [ \t\n\r]+ -> skip ;
 
 ## Przykładowy kod źródłowy w języku IFFI
 
-```iffi
-if (20 < 21):
-    var = 2 ** 9;
-    xd = 99 % 4;
-elif (9 == 9):
-    g = 2 + 3;
-else:
-    if (6 == 8):
-        ee = 9.13;
-        ee2 = 8;
-    else:
-        y = true;
-    fi
-fi
 
-loop while (6 > 0):
-    int v = 9;
-    string j3 =7.2;
-pool
-
-loop do:
-    char b = 7823;
-    while (2 ** 7)
-pool
+[language_sample](./scanner/language_sample)
