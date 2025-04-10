@@ -140,7 +140,7 @@ class IffiParser ( Parser ):
                      "'char'", "'string'", "'array'", "'list'", "'map'", 
                      "'tuple'", "'void'", "'if'", "'fi'", "'elif'", "'else'", 
                      "'loop'", "'pool'", "'for'", "'in'", "'while'", "'do'", 
-                     "'func'", "'cunf'" ]
+                     "'func'", "'cnuf'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -151,7 +151,7 @@ class IffiParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "VOID", "IF", "FI", "ELIF", "ELSE", "LOOP", 
-                      "POOL", "FOR", "IN", "WHILE", "DO", "FUNC", "CUNF", 
+                      "POOL", "FOR", "IN", "WHILE", "DO", "FUNC", "CNUF", 
                       "INT", "FLOAT", "DOUBLE", "ID", "BOOL", "WS" ]
 
     RULE_start_ = 0
@@ -222,7 +222,7 @@ class IffiParser ( Parser ):
     WHILE=42
     DO=43
     FUNC=44
-    CUNF=45
+    CNUF=45
     INT=46
     FLOAT=47
     DOUBLE=48
@@ -983,8 +983,8 @@ class IffiParser ( Parser ):
             return self.getTypedRuleContext(IffiParser.BlockContext,0)
 
 
-        def CUNF(self):
-            return self.getToken(IffiParser.CUNF, 0)
+        def CNUF(self):
+            return self.getToken(IffiParser.CNUF, 0)
 
         def basic_data_type(self):
             return self.getTypedRuleContext(IffiParser.Basic_data_typeContext,0)
@@ -1076,7 +1076,7 @@ class IffiParser ( Parser ):
             self.state = 172
             self.block()
             self.state = 173
-            self.match(IffiParser.CUNF)
+            self.match(IffiParser.CNUF)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

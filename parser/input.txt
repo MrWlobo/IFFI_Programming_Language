@@ -27,7 +27,7 @@ func some_Name(arg1: int, fdf: char) -> void
     if (4 ** 5 > 8 ** 2):
         float op43 = 34;
      fi
-cunf
+cnuf
 
 loop for (int i in [1, 2, 3, 4, 5]):
     int f = 9;

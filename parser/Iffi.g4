@@ -41,7 +41,7 @@ do_while_loop
     ;
 
 function
-    : FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block CUNF
+    : FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block CNUF
     ;
 
 argument
@@ -116,7 +116,7 @@ DO: 'do';
 
 // Functions
 FUNC: 'func';
-CUNF: 'cunf';
+CNUF: 'cnuf';
 
 atom
     : INT
