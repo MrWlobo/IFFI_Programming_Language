@@ -35,7 +35,7 @@ Kompilator języka IFFI do C
 
 ---
 
-## Tabela tokenów języka Kontur
+## Tabela tokenów języka IFFI
 
 ### Proste typy danych
 
@@ -245,7 +245,7 @@ WS    : [ \t\n\r]+ -> skip ;
 
 ## Przykładowy kod źródłowy w języku IFFI
 
-```kontur
+```iffi
 if (20 < 21):
     var = 2 ** 9;
     xd = 99 % 4;
