@@ -6,6 +6,7 @@ statement
     : declaration
     | assignment
     | if_statement
+    | for_loop
     | while_loop
     | do_while_loop
     | function
@@ -13,12 +14,21 @@ statement
 
 declaration
     : basic_data_type ID ('=' expr)? ';'
+    | advanced_data_type ID ('=' data_structure)? ';'
     ;
 
-assignment : ID '=' expr ';' ;
+assignment
+    : ID '=' expr ';'
+    | ID '=' data_structure ';'
+    ;
 
 if_statement
     : IF '(' expr ')' ':' block (ELIF '(' expr ')' ':' block)* (ELSE ':' block)? FI
+    ;
+
+for_loop
+    : LOOP FOR '(' basic_data_type ID IN data_structure ')' ':' block POOL
+    | LOOP FOR '(' basic_data_type ID IN ID ')' ':' block POOL
     ;
 
 while_loop
@@ -52,6 +62,14 @@ expr
     | expr '>' expr
     | expr '>=' expr
     | '(' expr ')'
+    | atom IN data_structure
+    | atom IN ID
+    ;
+
+data_structure
+    : '[' (atom (',' atom)*)? ']'
+    | '{' (atom ':' atom (',' atom ':' atom)*)? '}'
+    | '(' (atom (',' atom)*)? ')'
     ;
 
 // Keywords
@@ -87,6 +105,7 @@ ELSE: 'else';
 LOOP: 'loop';
 POOL: 'pool';
 FOR: 'for';
+IN: 'in';
 WHILE: 'while';
 DO: 'do';
 
@@ -103,6 +122,7 @@ atom
 
 INT   : [+-]?[0-9]+ ;
 FLOAT : [+-]?([0-9]*[.])?[0-9]+ ;
+DOUBLE : [+-]?([0-9]*[.])?[0-9]+ ;
 ID    : [a-zA-Z_][a-zA-Z_0-9]* ;
 BOOL  : 'true' | 'false' ;
 WS    : [ \t\n\r]+ -> skip ;
