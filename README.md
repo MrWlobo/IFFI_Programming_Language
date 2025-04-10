@@ -230,19 +230,6 @@ BOOL  : 'true' | 'false' ;
 WS    : [ \t\n\r]+ -> skip ;
 ```
 
-
----
-
-## Narzędzia i biblioteki
-
-| Narzędzie                | Zastosowanie                    |
-|--------------------------|---------------------------------|
-| `ANTLR 4`                | Generator parsera i leksera     |
-| `Python 3.13+`           | Interpreter                     |
-| `antlr4-python3-runtime` | Wykonanie parsera w Pythonie    |
-
----
-
 ## Przykładowy kod źródłowy w języku IFFI
 
 
