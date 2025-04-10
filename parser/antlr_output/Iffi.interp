@@ -44,7 +44,7 @@ null
 'while'
 'do'
 'func'
-'cunf'
+'cnuf'
 null
 null
 null
@@ -98,7 +98,7 @@ IN
 WHILE
 DO
 FUNC
-CUNF
+CNUF
 INT
 FLOAT
 DOUBLE
