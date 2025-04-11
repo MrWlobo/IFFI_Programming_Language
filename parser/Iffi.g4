@@ -81,13 +81,20 @@ data_structure
 
 // Basic data types
 basic_data_type
-    : 'int'
-    | 'float'
-    | 'double'
-    | 'bool'
-    | 'char'
-    | 'string'
+    : TYPE_INT
+    | TYPE_FLOAT
+    | TYPE_DOUBLE
+    | TYPE_BOOL
+    | TYPE_CHAR
+    | TYPE_STRING
     ;
+
+TYPE_INT: 'int';
+TYPE_FLOAT: 'float';
+TYPE_DOUBLE: 'double';
+TYPE_BOOL: 'bool';
+TYPE_CHAR: 'char';
+TYPE_STRING: 'string';
 
 // Advanced data types
 advanced_data_type
