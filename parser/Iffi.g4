@@ -98,11 +98,16 @@ TYPE_STRING: 'string';
 
 // Advanced data types
 advanced_data_type
-    : 'array'
-    | 'list'
-    | 'map'
-    | 'tuple'
+    : TYPE_ARRAY
+    | TYPE_LIST
+    | TYPE_MAP
+    | TYPE_TUPLE
     ;
+
+TYPE_ARRAY: 'array';
+TYPE_LIST: 'list';
+TYPE_MAP: 'map';
+TYPE_TUPLE: 'tuple';
 
 // Void
 VOID: 'void';

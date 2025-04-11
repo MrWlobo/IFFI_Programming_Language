@@ -35,7 +35,7 @@ def serializedATN():
         1,13,1,13,1,13,1,13,5,13,294,8,13,10,13,12,13,297,9,13,3,13,299,
         8,13,1,13,3,13,302,8,13,1,14,1,14,1,15,1,15,1,16,1,16,1,16,0,1,24,
         17,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,0,5,1,0,8,9,1,0,
-        11,12,1,0,27,32,1,0,23,26,2,0,46,47,49,50,340,0,37,1,0,0,0,2,50,
+        11,12,1,0,23,28,1,0,29,32,2,0,46,47,49,50,340,0,37,1,0,0,0,2,50,
         1,0,0,0,4,68,1,0,0,0,6,80,1,0,0,0,8,82,1,0,0,0,10,131,1,0,0,0,12,
         133,1,0,0,0,14,142,1,0,0,0,16,152,1,0,0,0,18,175,1,0,0,0,20,181,
         1,0,0,0,22,205,1,0,0,0,24,223,1,0,0,0,26,301,1,0,0,0,28,303,1,0,
@@ -136,9 +136,9 @@ class IffiParser ( Parser ):
     literalNames = [ "<INVALID>", "'='", "';'", "'('", "')'", "':'", "','", 
                      "'->'", "'+'", "'-'", "'**'", "'*'", "'/'", "'%'", 
                      "'=='", "'<'", "'<='", "'>'", "'>='", "'['", "']'", 
-                     "'{'", "'}'", "'array'", "'list'", "'map'", "'tuple'", 
-                     "'int'", "'float'", "'double'", "'bool'", "'char'", 
-                     "'string'", "'void'", "'if'", "'fi'", "'elif'", "'else'", 
+                     "'{'", "'}'", "'int'", "'float'", "'double'", "'bool'", 
+                     "'char'", "'string'", "'array'", "'list'", "'map'", 
+                     "'tuple'", "'void'", "'if'", "'fi'", "'elif'", "'else'", 
                      "'loop'", "'pool'", "'for'", "'in'", "'while'", "'do'", 
                      "'func'", "'cnuf'" ]
 
@@ -147,10 +147,10 @@ class IffiParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "TYPE_INT", 
                       "TYPE_FLOAT", "TYPE_DOUBLE", "TYPE_BOOL", "TYPE_CHAR", 
-                      "TYPE_STRING", "VOID", "IF", "FI", "ELIF", "ELSE", 
+                      "TYPE_STRING", "TYPE_ARRAY", "TYPE_LIST", "TYPE_MAP", 
+                      "TYPE_TUPLE", "VOID", "IF", "FI", "ELIF", "ELSE", 
                       "LOOP", "POOL", "FOR", "IN", "WHILE", "DO", "FUNC", 
                       "CNUF", "INT", "FLOAT", "DOUBLE", "ID", "BOOL", "WS" ]
 
@@ -200,16 +200,16 @@ class IffiParser ( Parser ):
     T__19=20
     T__20=21
     T__21=22
-    T__22=23
-    T__23=24
-    T__24=25
-    T__25=26
-    TYPE_INT=27
-    TYPE_FLOAT=28
-    TYPE_DOUBLE=29
-    TYPE_BOOL=30
-    TYPE_CHAR=31
-    TYPE_STRING=32
+    TYPE_INT=23
+    TYPE_FLOAT=24
+    TYPE_DOUBLE=25
+    TYPE_BOOL=26
+    TYPE_CHAR=27
+    TYPE_STRING=28
+    TYPE_ARRAY=29
+    TYPE_LIST=30
+    TYPE_MAP=31
+    TYPE_TUPLE=32
     VOID=33
     IF=34
     FI=35
@@ -466,7 +466,7 @@ class IffiParser ( Parser ):
             self.state = 68
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [27, 28, 29, 30, 31, 32]:
+            if token in [23, 24, 25, 26, 27, 28]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 52
                 self.basic_data_type()
@@ -485,7 +485,7 @@ class IffiParser ( Parser ):
                 self.state = 58
                 self.match(IffiParser.T__1)
                 pass
-            elif token in [23, 24, 25, 26]:
+            elif token in [29, 30, 31, 32]:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 60
                 self.advanced_data_type()
@@ -1058,11 +1058,11 @@ class IffiParser ( Parser ):
             self.state = 170
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [27, 28, 29, 30, 31, 32]:
+            if token in [23, 24, 25, 26, 27, 28]:
                 self.state = 167
                 self.basic_data_type()
                 pass
-            elif token in [23, 24, 25, 26]:
+            elif token in [29, 30, 31, 32]:
                 self.state = 168
                 self.advanced_data_type()
                 pass
@@ -1131,11 +1131,11 @@ class IffiParser ( Parser ):
             self.state = 179
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [27, 28, 29, 30, 31, 32]:
+            if token in [23, 24, 25, 26, 27, 28]:
                 self.state = 177
                 self.basic_data_type()
                 pass
-            elif token in [23, 24, 25, 26]:
+            elif token in [29, 30, 31, 32]:
                 self.state = 178
                 self.advanced_data_type()
                 pass
@@ -1770,7 +1770,7 @@ class IffiParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 303
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 8455716864) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 528482304) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -1791,6 +1791,17 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+        def TYPE_ARRAY(self):
+            return self.getToken(IffiParser.TYPE_ARRAY, 0)
+
+        def TYPE_LIST(self):
+            return self.getToken(IffiParser.TYPE_LIST, 0)
+
+        def TYPE_MAP(self):
+            return self.getToken(IffiParser.TYPE_MAP, 0)
+
+        def TYPE_TUPLE(self):
+            return self.getToken(IffiParser.TYPE_TUPLE, 0)
 
         def getRuleIndex(self):
             return IffiParser.RULE_advanced_data_type
@@ -1815,7 +1826,7 @@ class IffiParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 305
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 125829120) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 8053063680) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
