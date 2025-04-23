@@ -29,6 +29,8 @@ func some_Name(arg1: int, fdf: char) -> void
      fi
 cnuf
 
+# one line comment
+
 loop for (int i in [1, 2, 3, 4, 5]):
     int f = 9;
 pool

@@ -107,6 +107,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#increment_decrement.
+    def enterIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#increment_decrement.
+    def exitIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#block.
     def enterBlock(self, ctx:IffiParser.BlockContext):
         pass
@@ -122,6 +131,33 @@ class IffiListener(ParseTreeListener):
 
     # Exit a parse tree produced by IffiParser#expr.
     def exitExpr(self, ctx:IffiParser.ExprContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#logic_expr.
+    def enterLogic_expr(self, ctx:IffiParser.Logic_exprContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#logic_expr.
+    def exitLogic_expr(self, ctx:IffiParser.Logic_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#prefix_increment_decrement.
+    def enterPrefix_increment_decrement(self, ctx:IffiParser.Prefix_increment_decrementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#prefix_increment_decrement.
+    def exitPrefix_increment_decrement(self, ctx:IffiParser.Prefix_increment_decrementContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#postfix_increment_decrement.
+    def enterPostfix_increment_decrement(self, ctx:IffiParser.Postfix_increment_decrementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#postfix_increment_decrement.
+    def exitPostfix_increment_decrement(self, ctx:IffiParser.Postfix_increment_decrementContext):
         pass
 
 
