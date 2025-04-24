@@ -143,4 +143,4 @@ Kompilator języka IFFI do C
 
 ## Przykładowy kod źródłowy w języku IFFI
 
-[language_sample](./scanner/language_sample)
+[language_sample](./parser/input.txt)
