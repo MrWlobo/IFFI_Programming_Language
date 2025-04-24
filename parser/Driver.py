@@ -2,6 +2,8 @@ import sys
 from antlr4 import *
 from antlr_output.IffiLexer import IffiLexer
 from antlr_output.IffiParser import IffiParser
+from antlr4.tree.Trees import Trees
+
 from VisitorInterp import VisitorInterp
 
 def pretty_print_tree(node, indent=0):
@@ -23,6 +25,8 @@ def main(argv):
     tree = parser.start_()
     # print(tree.toStringTree(recog=parser))
     pretty_print_tree(tree)
+    # print(Trees.toStringTree(tree, None, parser))
+
 
 if __name__ == '__main__':
     main(sys.argv)
