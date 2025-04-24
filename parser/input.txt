@@ -22,7 +22,7 @@ loop do:
     while (2 ** 7)
 pool
 
-func some_Name(arg1: int, fdf: char) -> void
+func some_Name(arg1: int, fdf: char) -> void:
     int rrr = 9;
     if (4 ** 5 > 8 ** 2):
         float op43 = 34;

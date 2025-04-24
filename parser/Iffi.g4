@@ -46,7 +46,7 @@ do_while_loop
     ;
 
 function
-    : T_FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block T_CNUF
+    : T_FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) ':' block T_CNUF
     ;
 
 argument
