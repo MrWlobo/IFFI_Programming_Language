@@ -121,6 +121,7 @@ Kompilator języka IFFI do C
 | `T_SKIP`    | przejście do następnej iteracji pętli | `SKIP`    |
 | `T_FUNC`    | deklaracja funkcji                    | `FUNC`    |
 | `T_CNUF`    | zakończenie delaracji funkcji         | `CNUF`    |
+| `T_RETURN`  | zwrócenie wartości z funkcji          | `RETURN`  |
 | `T_TRY`     | blok potencjalnych błędów             | `TRY`     |
 | `T_YRT`     | zakończenie obsługi błędów            | `YRT`     |
 | `T_CATCH`   | obsługa wyjątków                      | `CATCH`   |

@@ -62,7 +62,13 @@ increment_decrement
     | ('++' | '--') ID ';'
     ;
 
-block : ( statement | T_STOP ';' | T_SKIP ';' )+ ;
+stop_statement : T_STOP ';' ;
+
+skip_statement : T_SKIP ';' ;
+
+return_statement : T_RETURN logic_expr ';' ;
+
+block : ( statement | stop_statement | skip_statement | return_statement )+ ;
 
 expr
     : atom
@@ -80,11 +86,11 @@ expr
     ;
 
 logic_expr
-    : expr (('==' | '!=' | '<' | '>' | '<=' | '>=') expr)?
-    | '(' logic_expr ')'
+    : '(' logic_expr ')'
     | NOT logic_expr
     | logic_expr AND logic_expr
     | logic_expr OR logic_expr
+    | expr (('==' | '!=' | '<' | '>' | '<=' | '>=') expr)?
     ;
 
 prefix_increment_decrement
@@ -155,6 +161,7 @@ T_SKIP: 'skip' | 'SKIP';
 // Functions
 T_FUNC: 'func' | 'FUNC';
 T_CNUF: 'cnuf' | 'CNUF';
+T_RETURN: 'return' | 'RETURN';
 
 // Boolean operators
 NOT: 'not' | 'NOT';

@@ -1,7 +1,3 @@
-LOOP while (elo > melo AND pod <= nad):
-    i++;
-    if (4 == 4):
-        skip;
-    fi
-    stop;
-pool
+FUNC funkcja() -> VOID:
+    return 7+ e;
+CNUF

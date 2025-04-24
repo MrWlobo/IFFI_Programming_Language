@@ -116,6 +116,33 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#stop_statement.
+    def enterStop_statement(self, ctx:IffiParser.Stop_statementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#stop_statement.
+    def exitStop_statement(self, ctx:IffiParser.Stop_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#skip_statement.
+    def enterSkip_statement(self, ctx:IffiParser.Skip_statementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#skip_statement.
+    def exitSkip_statement(self, ctx:IffiParser.Skip_statementContext):
+        pass
+
+
+    # Enter a parse tree produced by IffiParser#return_statement.
+    def enterReturn_statement(self, ctx:IffiParser.Return_statementContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#return_statement.
+    def exitReturn_statement(self, ctx:IffiParser.Return_statementContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#block.
     def enterBlock(self, ctx:IffiParser.BlockContext):
         pass
