@@ -159,12 +159,7 @@ class IffiParser ( Parser ):
                      "'/='", "'('", "')'", "':'", "','", "'->'", "'++'", 
                      "'--'", "'**'", "'*'", "'/'", "'//'", "'%'", "'+'", 
                      "'-'", "'=='", "'!='", "'<'", "'>'", "'<='", "'>='", 
-                     "'['", "']'", "'{'", "'}'", "'int'", "'float'", "'bool'", 
-                     "'char'", "'string'", "'array'", "'list'", "'map'", 
-                     "'tuple'", "'void'", "'if'", "'fi'", "'elif'", "'else'", 
-                     "'loop'", "'pool'", "'for'", "'in'", "'while'", "'do'", 
-                     "'stop'", "'skip'", "'func'", "'cnuf'", "'not'", "'and'", 
-                     "'or'" ]
+                     "'['", "']'", "'{'", "'}'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 

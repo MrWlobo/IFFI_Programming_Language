@@ -113,12 +113,12 @@ basic_data_type
     | TYPE_STRING
     ;
 
-TYPE_INT: 'int';
-TYPE_FLOAT: 'float';
+TYPE_INT: 'int' | 'INT';
+TYPE_FLOAT: 'float' | 'FLOAT';
 //TYPE_DOUBLE: 'double';
-TYPE_BOOL: 'bool';
-TYPE_CHAR: 'char';
-TYPE_STRING: 'string';
+TYPE_BOOL: 'bool' | 'BOOL';
+TYPE_CHAR: 'char' | 'CHAR';
+TYPE_STRING: 'string' | 'STRING';
 
 // Advanced data types
 advanced_data_type
@@ -128,38 +128,38 @@ advanced_data_type
     | TYPE_TUPLE
     ;
 
-TYPE_ARRAY: 'array';
-TYPE_LIST: 'list';
-TYPE_MAP: 'map';
-TYPE_TUPLE: 'tuple';
+TYPE_ARRAY: 'array' | 'ARRAY';
+TYPE_LIST: 'list' | 'LIST';
+TYPE_MAP: 'map' | 'MAP';
+TYPE_TUPLE: 'tuple' | 'TUPLE';
 
 // Void
-VOID: 'void';
+VOID: 'void' | 'VOID';
 
 // If statements
-T_IF: 'if';
-T_FI: 'fi';
-T_ELIF: 'elif';
-T_ELSE: 'else';
+T_IF: 'if' | 'IF';
+T_FI: 'fi' | 'FI';
+T_ELIF: 'elif' | 'ELIF';
+T_ELSE: 'else' | 'ELSE';
 
 // Loops
-T_LOOP: 'loop';
-T_POOL: 'pool';
-T_FOR: 'for';
-T_IN: 'in';
-T_WHILE: 'while';
-T_DO: 'do';
-T_STOP: 'stop';
-T_SKIP: 'skip';
+T_LOOP: 'loop' | 'LOOP';
+T_POOL: 'pool' | 'POOL';
+T_FOR: 'for' | 'FOR';
+T_IN: 'in' | 'IN';
+T_WHILE: 'while' | 'WHILE';
+T_DO: 'do' | 'DO';
+T_STOP: 'stop' | 'STOP';
+T_SKIP: 'skip' | 'SKIP';
 
 // Functions
-T_FUNC: 'func';
-T_CNUF: 'cnuf';
+T_FUNC: 'func' | 'FUNC';
+T_CNUF: 'cnuf' | 'CNUF';
 
 // Boolean operators
-NOT: 'not';
-AND: 'and';
-OR: 'or';
+NOT: 'not' | 'NOT';
+AND: 'and' | 'AND';
+OR: 'or' | 'OR';
 
 
 atom

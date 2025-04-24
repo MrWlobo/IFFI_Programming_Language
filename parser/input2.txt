@@ -1,4 +1,4 @@
-loop while (elo > melo):
+LOOP while (elo > melo AND pod <= nad):
     i++;
     if (4 == 4):
         skip;
