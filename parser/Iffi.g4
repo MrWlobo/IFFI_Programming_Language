@@ -62,7 +62,7 @@ increment_decrement
     | ('++' | '--') ID ';'
     ;
 
-block : statement+ ;
+block : ( statement | T_STOP ';' | T_SKIP ';' )+ ;
 
 expr
     : atom
@@ -149,6 +149,8 @@ T_FOR: 'for';
 T_IN: 'in';
 T_WHILE: 'while';
 T_DO: 'do';
+T_STOP: 'stop';
+T_SKIP: 'skip';
 
 // Functions
 T_FUNC: 'func';

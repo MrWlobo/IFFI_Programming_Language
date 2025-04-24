@@ -1,4 +1,7 @@
-if (not 2 <3 and 4<5):
-    int f = 2++;
-    f++;
-fi
+loop while (elo > melo):
+    i++;
+    if (4 == 4):
+        skip;
+    fi
+    stop;
+pool
