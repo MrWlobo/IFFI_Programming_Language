@@ -62,6 +62,10 @@ increment_decrement
     | ('++' | '--') ID ';'
     ;
 
+try_catch_statement
+    : T_TRY ':' T_CATCH '(' exception_type ID ')' ':' block (T_CATCH '(' exception_type ID ')' ':' block)* T_FINALLY ':' block T_YRT
+    ;
+
 stop_statement : T_STOP ';' ;
 
 skip_statement : T_SKIP ';' ;
@@ -158,6 +162,12 @@ T_DO: 'do' | 'DO';
 T_STOP: 'stop' | 'STOP';
 T_SKIP: 'skip' | 'SKIP';
 
+// Try-catch
+T_TRY: 'try' | 'TRY';
+T_YRT: 'yrt' | 'YRT';
+T_CATCH: 'catch' | 'CATCH';
+T_FINALLY: 'finally' | 'FINALLY';
+
 // Functions
 T_FUNC: 'func' | 'FUNC';
 T_CNUF: 'cnuf' | 'CNUF';
@@ -167,6 +177,11 @@ T_RETURN: 'return' | 'RETURN';
 NOT: 'not' | 'NOT';
 AND: 'and' | 'AND';
 OR: 'or' | 'OR';
+
+// Exception
+exception_type
+    : ID
+    ;
 
 
 atom
