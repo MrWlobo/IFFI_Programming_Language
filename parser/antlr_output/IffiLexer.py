@@ -191,18 +191,18 @@ class IffiLexer(Lexer):
     TYPE_MAP = 38
     TYPE_TUPLE = 39
     VOID = 40
-    IF = 41
-    FI = 42
-    ELIF = 43
-    ELSE = 44
-    LOOP = 45
-    POOL = 46
-    FOR = 47
-    IN = 48
-    WHILE = 49
-    DO = 50
-    FUNC = 51
-    CNUF = 52
+    T_IF = 41
+    T_FI = 42
+    T_ELIF = 43
+    T_ELSE = 44
+    T_LOOP = 45
+    T_POOL = 46
+    T_FOR = 47
+    T_IN = 48
+    T_WHILE = 49
+    T_DO = 50
+    T_FUNC = 51
+    T_CNUF = 52
     NOT = 53
     AND = 54
     OR = 55
@@ -230,9 +230,9 @@ class IffiLexer(Lexer):
     symbolicNames = [ "<INVALID>",
             "TYPE_INT", "TYPE_FLOAT", "TYPE_BOOL", "TYPE_CHAR", "TYPE_STRING", 
             "TYPE_ARRAY", "TYPE_LIST", "TYPE_MAP", "TYPE_TUPLE", "VOID", 
-            "IF", "FI", "ELIF", "ELSE", "LOOP", "POOL", "FOR", "IN", "WHILE", 
-            "DO", "FUNC", "CNUF", "NOT", "AND", "OR", "INT", "FLOAT", "ID", 
-            "BOOL", "WS", "LINE_COMMENT" ]
+            "T_IF", "T_FI", "T_ELIF", "T_ELSE", "T_LOOP", "T_POOL", "T_FOR", 
+            "T_IN", "T_WHILE", "T_DO", "T_FUNC", "T_CNUF", "NOT", "AND", 
+            "OR", "INT", "FLOAT", "ID", "BOOL", "WS", "LINE_COMMENT" ]
 
     ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
                   "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13", 
@@ -240,10 +240,10 @@ class IffiLexer(Lexer):
                   "T__20", "T__21", "T__22", "T__23", "T__24", "T__25", 
                   "T__26", "T__27", "T__28", "T__29", "TYPE_INT", "TYPE_FLOAT", 
                   "TYPE_BOOL", "TYPE_CHAR", "TYPE_STRING", "TYPE_ARRAY", 
-                  "TYPE_LIST", "TYPE_MAP", "TYPE_TUPLE", "VOID", "IF", "FI", 
-                  "ELIF", "ELSE", "LOOP", "POOL", "FOR", "IN", "WHILE", 
-                  "DO", "FUNC", "CNUF", "NOT", "AND", "OR", "INT", "FLOAT", 
-                  "ID", "BOOL", "WS", "LINE_COMMENT" ]
+                  "TYPE_LIST", "TYPE_MAP", "TYPE_TUPLE", "VOID", "T_IF", 
+                  "T_FI", "T_ELIF", "T_ELSE", "T_LOOP", "T_POOL", "T_FOR", 
+                  "T_IN", "T_WHILE", "T_DO", "T_FUNC", "T_CNUF", "NOT", 
+                  "AND", "OR", "INT", "FLOAT", "ID", "BOOL", "WS", "LINE_COMMENT" ]
 
     grammarFileName = "Iffi.g4"
 

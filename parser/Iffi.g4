@@ -29,24 +29,24 @@ assignment
     ;
 
 if_statement
-    : IF '(' logic_expr ')' ':' block (ELIF '(' logic_expr ')' ':' block)* (ELSE ':' block)? FI
+    : T_IF '(' logic_expr ')' ':' block (T_ELIF '(' logic_expr ')' ':' block)* (T_ELSE ':' block)? T_FI
     ;
 
 for_loop
-    : LOOP FOR '(' basic_data_type ID IN data_structure ')' ':' block POOL
-    | LOOP FOR '(' basic_data_type ID IN ID ')' ':' block POOL
+    : T_LOOP T_FOR '(' basic_data_type ID T_IN data_structure ')' ':' block T_POOL
+    | T_LOOP T_FOR '(' basic_data_type ID T_IN ID ')' ':' block T_POOL
     ;
 
 while_loop
-    : LOOP WHILE '(' logic_expr ')' ':' block POOL
+    : T_LOOP T_WHILE '(' logic_expr ')' ':' block T_POOL
     ;
 
 do_while_loop
-    : LOOP DO ':' block WHILE '(' logic_expr ')' POOL
+    : T_LOOP T_DO ':' block T_WHILE '(' logic_expr ')' T_POOL
     ;
 
 function
-    : FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block CNUF
+    : T_FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) block T_CNUF
     ;
 
 argument
@@ -74,8 +74,8 @@ expr
     | '(' expr ')'
     | prefix_increment_decrement
     | postfix_increment_decrement
-    | atom IN data_structure
-    | atom IN ID
+    | atom T_IN data_structure
+    | atom T_IN ID
     | data_structure
     ;
 
@@ -137,22 +137,22 @@ TYPE_TUPLE: 'tuple';
 VOID: 'void';
 
 // If statements
-IF: 'if';
-FI: 'fi';
-ELIF: 'elif';
-ELSE: 'else';
+T_IF: 'if';
+T_FI: 'fi';
+T_ELIF: 'elif';
+T_ELSE: 'else';
 
 // Loops
-LOOP: 'loop';
-POOL: 'pool';
-FOR: 'for';
-IN: 'in';
-WHILE: 'while';
-DO: 'do';
+T_LOOP: 'loop';
+T_POOL: 'pool';
+T_FOR: 'for';
+T_IN: 'in';
+T_WHILE: 'while';
+T_DO: 'do';
 
 // Functions
-FUNC: 'func';
-CNUF: 'cnuf';
+T_FUNC: 'func';
+T_CNUF: 'cnuf';
 
 // Boolean operators
 NOT: 'not';

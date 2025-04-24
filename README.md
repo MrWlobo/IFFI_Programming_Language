@@ -105,22 +105,23 @@ Kompilator języka IFFI do C
 
 ### Słowa kluczowe
 
-| Token       | Opis                              | Przykład  |
-|-------------|-----------------------------------|-----------|
-| `T_IF`      | instrukcja warunkowa if           | `IF`      |
-| `T_ELIF`    | instrukcja elif                   | `ELIF`    |
-| `T_ELSE`    | instrukcja else                   | `ELSE`    |
-| `T_FI`      | instrukcja fi                     | `FI`      |
-| `T_LOOP`    | instrukcja rozpoczęcia pętli      | `LOOP`    |
-| `T_POOL`    | instrukcja zakończenia pętli      | `POOL`    |
-| `T_FOR`     | pętla for                         | `FOR`     |
-| `T_WHILE`   | pętla while                       | `WHILE`   |
-| `T_DO`      | pętla do while                    | `DO`      |
-| `T_FUNC`    | deklaracja funkcji                | `FUNC`    |
-| `T_CNUF`    | zakończenie delaracji funkcji     | `CNUF`    |
-| `T_TRY`     | blok potencjalnych błędów         | `TRY`     |
-| `T_YRT`     | zakończenie obsługi błędów        | `YRT`     |
-| `T_CATCH`   | obsługa wyjątków                  | `CATCH`   |
+| Token       | Opis                               | Przykład  |
+|-------------|------------------------------------|-----------|
+| `T_IF`      | instrukcja warunkowa if            | `IF`      |
+| `T_ELIF`    | instrukcja elif                    | `ELIF`    |
+| `T_ELSE`    | instrukcja else                    | `ELSE`    |
+| `T_FI`      | instrukcja fi                      | `FI`      |
+| `T_LOOP`    | instrukcja rozpoczęcia pętli       | `LOOP`    |
+| `T_POOL`    | instrukcja zakończenia pętli       | `POOL`    |
+| `T_FOR`     | pętla for                          | `FOR`     |
+| `T_WHILE`   | pętla while                        | `WHILE`   |
+| `T_DO`      | pętla do while                     | `DO`      |
+| `T_IN`      | iteracja po elementach struktury   | `IN`      |
+| `T_FUNC`    | deklaracja funkcji                 | `FUNC`    |
+| `T_CNUF`    | zakończenie delaracji funkcji      | `CNUF`    |
+| `T_TRY`     | blok potencjalnych błędów          | `TRY`     |
+| `T_YRT`     | zakończenie obsługi błędów         | `YRT`     |
+| `T_CATCH`   | obsługa wyjątków                   | `CATCH`   |
 | `T_FINALLY` | blok wykonywany po obsłudze błędów | `FINALLY` |
 
 

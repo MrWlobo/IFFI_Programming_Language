@@ -173,9 +173,10 @@ class IffiParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "TYPE_INT", 
                       "TYPE_FLOAT", "TYPE_BOOL", "TYPE_CHAR", "TYPE_STRING", 
                       "TYPE_ARRAY", "TYPE_LIST", "TYPE_MAP", "TYPE_TUPLE", 
-                      "VOID", "IF", "FI", "ELIF", "ELSE", "LOOP", "POOL", 
-                      "FOR", "IN", "WHILE", "DO", "FUNC", "CNUF", "NOT", 
-                      "AND", "OR", "INT", "FLOAT", "ID", "BOOL", "WS", "LINE_COMMENT" ]
+                      "VOID", "T_IF", "T_FI", "T_ELIF", "T_ELSE", "T_LOOP", 
+                      "T_POOL", "T_FOR", "T_IN", "T_WHILE", "T_DO", "T_FUNC", 
+                      "T_CNUF", "NOT", "AND", "OR", "INT", "FLOAT", "ID", 
+                      "BOOL", "WS", "LINE_COMMENT" ]
 
     RULE_start_ = 0
     RULE_statement = 1
@@ -247,18 +248,18 @@ class IffiParser ( Parser ):
     TYPE_MAP=38
     TYPE_TUPLE=39
     VOID=40
-    IF=41
-    FI=42
-    ELIF=43
-    ELSE=44
-    LOOP=45
-    POOL=46
-    FOR=47
-    IN=48
-    WHILE=49
-    DO=50
-    FUNC=51
-    CNUF=52
+    T_IF=41
+    T_FI=42
+    T_ELIF=43
+    T_ELSE=44
+    T_LOOP=45
+    T_POOL=46
+    T_FOR=47
+    T_IN=48
+    T_WHILE=49
+    T_DO=50
+    T_FUNC=51
+    T_CNUF=52
     NOT=53
     AND=54
     OR=55
@@ -694,8 +695,8 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def IF(self):
-            return self.getToken(IffiParser.IF, 0)
+        def T_IF(self):
+            return self.getToken(IffiParser.T_IF, 0)
 
         def logic_expr(self, i:int=None):
             if i is None:
@@ -711,17 +712,17 @@ class IffiParser ( Parser ):
                 return self.getTypedRuleContext(IffiParser.BlockContext,i)
 
 
-        def FI(self):
-            return self.getToken(IffiParser.FI, 0)
+        def T_FI(self):
+            return self.getToken(IffiParser.T_FI, 0)
 
-        def ELIF(self, i:int=None):
+        def T_ELIF(self, i:int=None):
             if i is None:
-                return self.getTokens(IffiParser.ELIF)
+                return self.getTokens(IffiParser.T_ELIF)
             else:
-                return self.getToken(IffiParser.ELIF, i)
+                return self.getToken(IffiParser.T_ELIF, i)
 
-        def ELSE(self):
-            return self.getToken(IffiParser.ELSE, 0)
+        def T_ELSE(self):
+            return self.getToken(IffiParser.T_ELSE, 0)
 
         def getRuleIndex(self):
             return IffiParser.RULE_if_statement
@@ -745,7 +746,7 @@ class IffiParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 111
-            self.match(IffiParser.IF)
+            self.match(IffiParser.T_IF)
             self.state = 112
             self.match(IffiParser.T__6)
             self.state = 113
@@ -761,7 +762,7 @@ class IffiParser ( Parser ):
             _la = self._input.LA(1)
             while _la==43:
                 self.state = 117
-                self.match(IffiParser.ELIF)
+                self.match(IffiParser.T_ELIF)
                 self.state = 118
                 self.match(IffiParser.T__6)
                 self.state = 119
@@ -781,7 +782,7 @@ class IffiParser ( Parser ):
             _la = self._input.LA(1)
             if _la==44:
                 self.state = 129
-                self.match(IffiParser.ELSE)
+                self.match(IffiParser.T_ELSE)
                 self.state = 130
                 self.match(IffiParser.T__8)
                 self.state = 131
@@ -789,7 +790,7 @@ class IffiParser ( Parser ):
 
 
             self.state = 134
-            self.match(IffiParser.FI)
+            self.match(IffiParser.T_FI)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -806,11 +807,11 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def LOOP(self):
-            return self.getToken(IffiParser.LOOP, 0)
+        def T_LOOP(self):
+            return self.getToken(IffiParser.T_LOOP, 0)
 
-        def FOR(self):
-            return self.getToken(IffiParser.FOR, 0)
+        def T_FOR(self):
+            return self.getToken(IffiParser.T_FOR, 0)
 
         def basic_data_type(self):
             return self.getTypedRuleContext(IffiParser.Basic_data_typeContext,0)
@@ -822,8 +823,8 @@ class IffiParser ( Parser ):
             else:
                 return self.getToken(IffiParser.ID, i)
 
-        def IN(self):
-            return self.getToken(IffiParser.IN, 0)
+        def T_IN(self):
+            return self.getToken(IffiParser.T_IN, 0)
 
         def data_structure(self):
             return self.getTypedRuleContext(IffiParser.Data_structureContext,0)
@@ -833,8 +834,8 @@ class IffiParser ( Parser ):
             return self.getTypedRuleContext(IffiParser.BlockContext,0)
 
 
-        def POOL(self):
-            return self.getToken(IffiParser.POOL, 0)
+        def T_POOL(self):
+            return self.getToken(IffiParser.T_POOL, 0)
 
         def getRuleIndex(self):
             return IffiParser.RULE_for_loop
@@ -861,9 +862,9 @@ class IffiParser ( Parser ):
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 136
-                self.match(IffiParser.LOOP)
+                self.match(IffiParser.T_LOOP)
                 self.state = 137
-                self.match(IffiParser.FOR)
+                self.match(IffiParser.T_FOR)
                 self.state = 138
                 self.match(IffiParser.T__6)
                 self.state = 139
@@ -871,7 +872,7 @@ class IffiParser ( Parser ):
                 self.state = 140
                 self.match(IffiParser.ID)
                 self.state = 141
-                self.match(IffiParser.IN)
+                self.match(IffiParser.T_IN)
                 self.state = 142
                 self.data_structure()
                 self.state = 143
@@ -881,15 +882,15 @@ class IffiParser ( Parser ):
                 self.state = 145
                 self.block()
                 self.state = 146
-                self.match(IffiParser.POOL)
+                self.match(IffiParser.T_POOL)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 148
-                self.match(IffiParser.LOOP)
+                self.match(IffiParser.T_LOOP)
                 self.state = 149
-                self.match(IffiParser.FOR)
+                self.match(IffiParser.T_FOR)
                 self.state = 150
                 self.match(IffiParser.T__6)
                 self.state = 151
@@ -897,7 +898,7 @@ class IffiParser ( Parser ):
                 self.state = 152
                 self.match(IffiParser.ID)
                 self.state = 153
-                self.match(IffiParser.IN)
+                self.match(IffiParser.T_IN)
                 self.state = 154
                 self.match(IffiParser.ID)
                 self.state = 155
@@ -907,7 +908,7 @@ class IffiParser ( Parser ):
                 self.state = 157
                 self.block()
                 self.state = 158
-                self.match(IffiParser.POOL)
+                self.match(IffiParser.T_POOL)
                 pass
 
 
@@ -927,11 +928,11 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def LOOP(self):
-            return self.getToken(IffiParser.LOOP, 0)
+        def T_LOOP(self):
+            return self.getToken(IffiParser.T_LOOP, 0)
 
-        def WHILE(self):
-            return self.getToken(IffiParser.WHILE, 0)
+        def T_WHILE(self):
+            return self.getToken(IffiParser.T_WHILE, 0)
 
         def logic_expr(self):
             return self.getTypedRuleContext(IffiParser.Logic_exprContext,0)
@@ -941,8 +942,8 @@ class IffiParser ( Parser ):
             return self.getTypedRuleContext(IffiParser.BlockContext,0)
 
 
-        def POOL(self):
-            return self.getToken(IffiParser.POOL, 0)
+        def T_POOL(self):
+            return self.getToken(IffiParser.T_POOL, 0)
 
         def getRuleIndex(self):
             return IffiParser.RULE_while_loop
@@ -965,9 +966,9 @@ class IffiParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 162
-            self.match(IffiParser.LOOP)
+            self.match(IffiParser.T_LOOP)
             self.state = 163
-            self.match(IffiParser.WHILE)
+            self.match(IffiParser.T_WHILE)
             self.state = 164
             self.match(IffiParser.T__6)
             self.state = 165
@@ -979,7 +980,7 @@ class IffiParser ( Parser ):
             self.state = 168
             self.block()
             self.state = 169
-            self.match(IffiParser.POOL)
+            self.match(IffiParser.T_POOL)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -996,25 +997,25 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def LOOP(self):
-            return self.getToken(IffiParser.LOOP, 0)
+        def T_LOOP(self):
+            return self.getToken(IffiParser.T_LOOP, 0)
 
-        def DO(self):
-            return self.getToken(IffiParser.DO, 0)
+        def T_DO(self):
+            return self.getToken(IffiParser.T_DO, 0)
 
         def block(self):
             return self.getTypedRuleContext(IffiParser.BlockContext,0)
 
 
-        def WHILE(self):
-            return self.getToken(IffiParser.WHILE, 0)
+        def T_WHILE(self):
+            return self.getToken(IffiParser.T_WHILE, 0)
 
         def logic_expr(self):
             return self.getTypedRuleContext(IffiParser.Logic_exprContext,0)
 
 
-        def POOL(self):
-            return self.getToken(IffiParser.POOL, 0)
+        def T_POOL(self):
+            return self.getToken(IffiParser.T_POOL, 0)
 
         def getRuleIndex(self):
             return IffiParser.RULE_do_while_loop
@@ -1037,15 +1038,15 @@ class IffiParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 171
-            self.match(IffiParser.LOOP)
+            self.match(IffiParser.T_LOOP)
             self.state = 172
-            self.match(IffiParser.DO)
+            self.match(IffiParser.T_DO)
             self.state = 173
             self.match(IffiParser.T__8)
             self.state = 174
             self.block()
             self.state = 175
-            self.match(IffiParser.WHILE)
+            self.match(IffiParser.T_WHILE)
             self.state = 176
             self.match(IffiParser.T__6)
             self.state = 177
@@ -1053,7 +1054,7 @@ class IffiParser ( Parser ):
             self.state = 178
             self.match(IffiParser.T__7)
             self.state = 179
-            self.match(IffiParser.POOL)
+            self.match(IffiParser.T_POOL)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1070,8 +1071,8 @@ class IffiParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def FUNC(self):
-            return self.getToken(IffiParser.FUNC, 0)
+        def T_FUNC(self):
+            return self.getToken(IffiParser.T_FUNC, 0)
 
         def ID(self):
             return self.getToken(IffiParser.ID, 0)
@@ -1080,8 +1081,8 @@ class IffiParser ( Parser ):
             return self.getTypedRuleContext(IffiParser.BlockContext,0)
 
 
-        def CNUF(self):
-            return self.getToken(IffiParser.CNUF, 0)
+        def T_CNUF(self):
+            return self.getToken(IffiParser.T_CNUF, 0)
 
         def basic_data_type(self):
             return self.getTypedRuleContext(IffiParser.Basic_data_typeContext,0)
@@ -1123,7 +1124,7 @@ class IffiParser ( Parser ):
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 181
-            self.match(IffiParser.FUNC)
+            self.match(IffiParser.T_FUNC)
             self.state = 182
             self.match(IffiParser.ID)
             self.state = 183
@@ -1173,7 +1174,7 @@ class IffiParser ( Parser ):
             self.state = 201
             self.block()
             self.state = 202
-            self.match(IffiParser.CNUF)
+            self.match(IffiParser.T_CNUF)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1526,8 +1527,8 @@ class IffiParser ( Parser ):
             return self.getTypedRuleContext(IffiParser.Postfix_increment_decrementContext,0)
 
 
-        def IN(self):
-            return self.getToken(IffiParser.IN, 0)
+        def T_IN(self):
+            return self.getToken(IffiParser.T_IN, 0)
 
         def data_structure(self):
             return self.getTypedRuleContext(IffiParser.Data_structureContext,0)
@@ -1595,7 +1596,7 @@ class IffiParser ( Parser ):
                 self.state = 255
                 self.atom()
                 self.state = 256
-                self.match(IffiParser.IN)
+                self.match(IffiParser.T_IN)
                 self.state = 257
                 self.data_structure()
                 pass
@@ -1604,7 +1605,7 @@ class IffiParser ( Parser ):
                 self.state = 259
                 self.atom()
                 self.state = 260
-                self.match(IffiParser.IN)
+                self.match(IffiParser.T_IN)
                 self.state = 261
                 self.match(IffiParser.ID)
                 pass
