@@ -6,6 +6,7 @@ statement
     : declaration
     | assignment
     | if_statement
+    | loop
     | for_loop
     | while_loop
     | do_while_loop
@@ -30,6 +31,10 @@ assignment
 
 if_statement
     : T_IF LEFT_PAREN logic_expr RIGHT_PAREN COLON block (T_ELIF LEFT_PAREN logic_expr RIGHT_PAREN COLON block)* (T_ELSE COLON block)? T_FI
+    ;
+
+loop
+    : T_LOOP COLON block T_POOL
     ;
 
 for_loop

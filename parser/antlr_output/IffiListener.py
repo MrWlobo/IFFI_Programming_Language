@@ -53,6 +53,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#loop.
+    def enterLoop(self, ctx:IffiParser.LoopContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#loop.
+    def exitLoop(self, ctx:IffiParser.LoopContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#for_loop.
     def enterFor_loop(self, ctx:IffiParser.For_loopContext):
         pass

@@ -1,3 +1,7 @@
-FUNC funkcja() -> VOID:
-    return 7+ e;
-CNUF
+int fa = 7;
+LOOP:
+    fa = fa + 8;
+    if (fa > 100):
+        break;
+    fi
+POOL
