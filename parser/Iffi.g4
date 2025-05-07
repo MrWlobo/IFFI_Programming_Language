@@ -61,6 +61,10 @@ increment_decrement
     : ID (INCREMENT | DECREMENT) SEMICOLON
     | (INCREMENT | DECREMENT) ID SEMICOLON
     ;
+    
+try_catch_statement
+    : T_TRY COLON T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block (T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block)* T_FINALLY COLON block T_YRT
+    ;
 
 stop_statement : T_STOP SEMICOLON ;
 
@@ -158,6 +162,12 @@ T_DO: 'do' | 'DO';
 T_STOP: 'stop' | 'STOP';
 T_SKIP: 'skip' | 'SKIP';
 
+// Try-catch
+T_TRY: 'try' | 'TRY';
+T_YRT: 'yrt' | 'YRT';
+T_CATCH: 'catch' | 'CATCH';
+T_FINALLY: 'finally' | 'FINALLY';
+
 // Functions
 T_FUNC: 'func' | 'FUNC';
 T_CNUF: 'cnuf' | 'CNUF';
@@ -167,6 +177,11 @@ T_RETURN: 'return' | 'RETURN';
 NOT: 'not' | 'NOT';
 AND: 'and' | 'AND';
 OR: 'or' | 'OR';
+
+// Exception
+exception_type
+    : ID
+    ;
 
 
 atom
