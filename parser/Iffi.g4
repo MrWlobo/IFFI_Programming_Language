@@ -15,69 +15,69 @@ statement
     ;
 
 declaration
-    : basic_data_type ID ('=' expr)? ';'
-    | advanced_data_type ID ('=' data_structure)? ';'
+    : basic_data_type ID (ASSIGN expr)? SEMICOLON
+    | advanced_data_type ID (ASSIGN data_structure)? SEMICOLON
     ;
 
 assignment
-    : ID '=' expr ';'
-    | ID '+=' expr ';'
-    | ID '-=' expr ';'
-    | ID '*=' expr ';'
-    | ID '/=' expr ';'
-    | ID '=' data_structure ';'
+    : ID ASSIGN expr SEMICOLON
+    | ID ASSIGN_PLUS expr SEMICOLON
+    | ID ASSIGN_MINUS expr SEMICOLON
+    | ID ASSIGN_MULTIPLY expr SEMICOLON
+    | ID ASSIGN_DIVIDE expr SEMICOLON
+    | ID ASSIGN data_structure SEMICOLON
     ;
 
 if_statement
-    : T_IF '(' logic_expr ')' ':' block (T_ELIF '(' logic_expr ')' ':' block)* (T_ELSE ':' block)? T_FI
+    : T_IF LEFT_PAREN logic_expr RIGHT_PAREN COLON block (T_ELIF LEFT_PAREN logic_expr RIGHT_PAREN COLON block)* (T_ELSE COLON block)? T_FI
     ;
 
 for_loop
-    : T_LOOP T_FOR '(' basic_data_type ID T_IN data_structure ')' ':' block T_POOL
-    | T_LOOP T_FOR '(' basic_data_type ID T_IN ID ')' ':' block T_POOL
+    : T_LOOP T_FOR LEFT_PAREN basic_data_type ID T_IN data_structure RIGHT_PAREN COLON block T_POOL
+    | T_LOOP T_FOR LEFT_PAREN basic_data_type ID T_IN ID RIGHT_PAREN COLON block T_POOL
     ;
 
 while_loop
-    : T_LOOP T_WHILE '(' logic_expr ')' ':' block T_POOL
+    : T_LOOP T_WHILE LEFT_PAREN logic_expr RIGHT_PAREN COLON block T_POOL
     ;
 
 do_while_loop
-    : T_LOOP T_DO ':' block T_WHILE '(' logic_expr ')' T_POOL
+    : T_LOOP T_DO COLON block T_WHILE LEFT_PAREN logic_expr RIGHT_PAREN T_POOL
     ;
 
 function
-    : T_FUNC ID '(' (argument (',' argument)*)? ')' '->' (basic_data_type | advanced_data_type| VOID) ':' block T_CNUF
+    : T_FUNC ID LEFT_PAREN (argument (COMMA argument)*)? RIGHT_PAREN ARROW (basic_data_type | advanced_data_type| VOID) COLON block T_CNUF
     ;
 
 argument
-    : ID ':' (basic_data_type | advanced_data_type)
+    : ID COLON (basic_data_type | advanced_data_type)
     ;
 
 function_call
-    : ID '(' ((ID | atom | data_structure) (',' (ID | atom | data_structure))*)? ')' ';'
+    : ID LEFT_PAREN ((ID | atom | data_structure) (COMMA (ID | atom | data_structure))*)? RIGHT_PAREN SEMICOLON
     ;
 
 increment_decrement
-    : ID ('++' | '--') ';'
-    | ('++' | '--') ID ';'
+    : ID (INCREMENT | DECREMENT) SEMICOLON
+    | (INCREMENT | DECREMENT) ID SEMICOLON
     ;
 
-stop_statement : T_STOP ';' ;
+stop_statement : T_STOP SEMICOLON ;
 
-skip_statement : T_SKIP ';' ;
+skip_statement : T_SKIP SEMICOLON ;
 
-return_statement : T_RETURN logic_expr ';' ;
+return_statement : T_RETURN logic_expr SEMICOLON ;
 
 block : ( statement | stop_statement | skip_statement | return_statement )+ ;
 
 expr
     : atom
     | function_call
-    | expr ('++' | '--')
-    | expr '**' expr
-    | expr ('*' | '/' | '//' | '%') expr
-    | expr ('+' | '-') expr
-    | '(' expr ')'
+    | expr (INCREMENT | DECREMENT)
+    | expr POWER expr
+    | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
+    | expr (PLUS | MINUS) expr
+    | LEFT_PAREN expr RIGHT_PAREN
     | prefix_increment_decrement
     | postfix_increment_decrement
     | atom T_IN data_structure
@@ -86,25 +86,25 @@ expr
     ;
 
 logic_expr
-    : '(' logic_expr ')'
+    : LEFT_PAREN logic_expr RIGHT_PAREN
     | NOT logic_expr
     | logic_expr AND logic_expr
     | logic_expr OR logic_expr
-    | expr (('==' | '!=' | '<' | '>' | '<=' | '>=') expr)?
+    | expr ((EQUAL | NOT_EQUAL | LESS_THAN | GREATER_THAN | LESS_EQUAL | GREATER_EQUAL) expr)?
     ;
 
 prefix_increment_decrement
-    : ('++' | '--') ID
+    : (INCREMENT | DECREMENT) ID
     ;
 
 postfix_increment_decrement
-    : ID ('++' | '--')
+    : ID (INCREMENT | DECREMENT)
     ;
 
 data_structure
-    : '[' (atom (',' atom)*)? ']'
-    | '{' (atom ':' atom (',' atom ':' atom)*)? '}'
-    | '(' (atom (',' atom)*)? ')'
+    : LEFT_BRACKET (atom (COMMA atom)*)? RIGHT_BRACKET
+    | LEFT_BRACE (atom COLON atom (COMMA atom COLON atom)*)? RIGHT_BRACE
+    | LEFT_PAREN (atom (COMMA atom)*)? RIGHT_PAREN
     ;
 
 // Keywords
@@ -175,6 +175,38 @@ atom
     | ID
     | BOOL
     ;
+
+LEFT_PAREN: '(';
+RIGHT_PAREN: ')';
+LEFT_BRACKET: '[';
+RIGHT_BRACKET: ']';
+LEFT_BRACE: '{';
+RIGHT_BRACE: '}';
+SEMICOLON: ';';
+COMMA: ',';
+COLON: ':';
+ARROW: '->';
+HASHTAG: '#';
+PLUS: '+';
+MINUS: '-';
+MULTIPLY: '*';
+DIVIDE: '/';
+FLOOR_DIVIDE: '//';
+MODULO: '%';
+POWER: '**';
+INCREMENT: '++';
+DECREMENT: '--';
+EQUAL: '==';
+NOT_EQUAL: '!=';
+LESS_THAN: '<';
+LESS_EQUAL: '<=';
+GREATER_THAN: '>';
+GREATER_EQUAL: '>=';
+ASSIGN: '=';
+ASSIGN_PLUS: '+=';
+ASSIGN_MINUS: '-=';
+ASSIGN_MULTIPLY: '*=';
+ASSIGN_DIVIDE: '/=';
 
 INT: [-]?[0-9]+ ;
 FLOAT: [-]?([0-9]*[.])?[0-9]+ ;
