@@ -34,7 +34,12 @@ def main(argv):
     with open("output.c", "w", encoding="utf-8") as f:
         # print("Output")
         # print("\n".join(generator.output))
+        libraries = ["stdio.h","math.h"]
+        for library in libraries:
+            f.write(f"\n<{library}>")
+        f.write("\nint main() {\n")
         f.write("\n".join(generator.output))
+        f.write("\nreturn 0;}")
 
 
 if __name__ == '__main__':
