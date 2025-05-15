@@ -74,6 +74,31 @@ class CodeGenerator(IffiVisitor):
         else:
             return "/* Unsupported expr */"
 
+    def visitLogic_expr(self, ctx):
+        if ctx.LEFT_PAREN() and ctx.RIGHT_PAREN():
+            return f"({self.visit(ctx.logic_expr(0))})"
+
+        if ctx.NOT():
+            return f"!{self.visit(ctx.logic_expr(0))}"
+
+        if ctx.AND():
+            left = self.visit(ctx.logic_expr(0))
+            right = self.visit(ctx.logic_expr(1))
+            return f"({left} && {right})"
+
+        if ctx.OR():
+            left = self.visit(ctx.logic_expr(0))
+            right = self.visit(ctx.logic_expr(1))
+            return f"({left} || {right})"
+
+        if ctx.expr(1):
+            left = self.visit(ctx.expr(0))
+            op = ctx.getChild(1).getText()
+            right = self.visit(ctx.expr(1))
+            return f"({left} {op} {right})"
+        else:
+            return self.visit(ctx.expr(0))
+
     def visitStatement(self, ctx):
         return self.visit(ctx.getChild(0))
 
