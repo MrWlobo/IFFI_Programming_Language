@@ -17,6 +17,19 @@ class CodeGenerator(IffiVisitor):
         self.output.append(line)
         return line
 
+    def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
+        var_type = ctx.basic_data_type().getText()
+        var_name = ctx.ID().getText()
+
+        if ctx.expr():
+            value = self.visit(ctx.expr())  # np. "42"
+            line = f"{var_type} {var_name} = {value};"
+        else:
+            line = f"{var_type} {var_name};"
+
+        self.output.append(line)
+        return line
+
     def visitAtom(self, ctx):
         if ctx.INT():
             return ctx.INT().getText()
@@ -129,3 +142,16 @@ class CodeGenerator(IffiVisitor):
             self.output.append("}")
 
         return None
+
+    def visitBasic_data_type(self, ctx):
+        if ctx.TYPE_INT():
+            return "int"
+        elif ctx.TYPE_FLOAT():
+            return "float"
+        elif ctx.TYPE_BOOL():
+            return "bool"
+        elif ctx.TYPE_CHAR():
+            return "char"
+        elif ctx.TYPE_STRING():
+            return "char*"
+
