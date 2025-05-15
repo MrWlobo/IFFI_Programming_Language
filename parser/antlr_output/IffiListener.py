@@ -125,6 +125,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#print_call.
+    def enterPrint_call(self, ctx:IffiParser.Print_callContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#print_call.
+    def exitPrint_call(self, ctx:IffiParser.Print_callContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#try_catch_statement.
     def enterTry_catch_statement(self, ctx:IffiParser.Try_catch_statementContext):
         pass

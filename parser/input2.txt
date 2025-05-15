@@ -2,6 +2,7 @@ int fa = 7;
 LOOP:
     fa = fa + 8;
     if (fa > 100):
-        break;
+        stop;
     fi
+    print(2+1);
 POOL

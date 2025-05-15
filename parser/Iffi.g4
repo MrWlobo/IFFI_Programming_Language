@@ -13,6 +13,7 @@ statement
     | function
     | function_call
     | increment_decrement
+    | print_call
     ;
 
 declaration
@@ -66,6 +67,9 @@ increment_decrement
     : ID (INCREMENT | DECREMENT) SEMICOLON
     | (INCREMENT | DECREMENT) ID SEMICOLON
     ;
+
+print_call
+    : PRINT LEFT_PAREN expr RIGHT_PAREN SEMICOLON ;
     
 try_catch_statement
     : T_TRY COLON T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block (T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block)* T_FINALLY COLON block T_YRT
@@ -182,6 +186,9 @@ T_RETURN: 'return' | 'RETURN';
 NOT: 'not' | 'NOT';
 AND: 'and' | 'AND';
 OR: 'or' | 'OR';
+
+// Print call
+PRINT: 'print';
 
 // Exception
 exception_type
