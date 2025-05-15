@@ -36,7 +36,7 @@ def main(argv):
         # print("\n".join(generator.output))
         libraries = ["stdio.h","math.h", "stdbool.h"]
         for library in libraries:
-            f.write(f"\n<#{library}>")
+            f.write(f"\n#<{library}>")
         f.write("\nint main() {\n")
         f.write("\n".join(generator.output))
         f.write("\nreturn 0;}")
