@@ -3,6 +3,7 @@ from antlr4 import *
 from antlr_output.IffiLexer import IffiLexer
 from antlr_output.IffiParser import IffiParser
 from antlr4.tree.Trees import Trees
+from CodeGenerator import CodeGenerator
 
 from VisitorInterp import VisitorInterp
 
@@ -24,8 +25,16 @@ def main(argv):
     parser = IffiParser(stream)
     tree = parser.start_()
     # print(tree.toStringTree(recog=parser))
-    pretty_print_tree(tree)
+    #pretty_print_tree(tree)
     # print(Trees.toStringTree(tree, None, parser))
+
+    generator = CodeGenerator()
+    generator.visit(tree)
+
+    with open("output.c", "w", encoding="utf-8") as f:
+        # print("Output")
+        # print("\n".join(generator.output))
+        f.write("\n".join(generator.output))
 
 
 if __name__ == '__main__':

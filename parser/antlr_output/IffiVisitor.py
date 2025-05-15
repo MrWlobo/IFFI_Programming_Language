@@ -34,6 +34,11 @@ class IffiVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by IffiParser#loop.
+    def visitLoop(self, ctx:IffiParser.LoopContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by IffiParser#for_loop.
     def visitFor_loop(self, ctx:IffiParser.For_loopContext):
         return self.visitChildren(ctx)
@@ -66,6 +71,11 @@ class IffiVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by IffiParser#increment_decrement.
     def visitIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by IffiParser#print_call.
+    def visitPrint_call(self, ctx:IffiParser.Print_callContext):
         return self.visitChildren(ctx)
 
 

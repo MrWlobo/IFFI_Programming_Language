@@ -354,6 +354,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitStart_" ):
                 listener.exitStart_(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStart_" ):
+                return visitor.visitStart_(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -446,6 +452,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitStatement" ):
                 listener.exitStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStatement" ):
+                return visitor.visitStatement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -577,6 +589,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitDeclaration" ):
                 listener.exitDeclaration(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDeclaration" ):
+                return visitor.visitDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -685,6 +703,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitAssignment" ):
                 listener.exitAssignment(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssignment" ):
+                return visitor.visitAssignment(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -844,6 +868,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitIf_statement" ):
                 listener.exitIf_statement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIf_statement" ):
+                return visitor.visitIf_statement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -940,6 +970,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitLoop" ):
                 listener.exitLoop(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLoop" ):
+                return visitor.visitLoop(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1022,6 +1058,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFor_loop" ):
                 listener.exitFor_loop(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFor_loop" ):
+                return visitor.visitFor_loop(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1140,6 +1182,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitWhile_loop" ):
                 listener.exitWhile_loop(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhile_loop" ):
+                return visitor.visitWhile_loop(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1220,6 +1268,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitDo_while_loop" ):
                 listener.exitDo_while_loop(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDo_while_loop" ):
+                return visitor.visitDo_while_loop(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1323,6 +1377,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFunction" ):
                 listener.exitFunction(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunction" ):
+                return visitor.visitFunction(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1429,6 +1489,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitArgument" ):
                 listener.exitArgument(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArgument" ):
+                return visitor.visitArgument(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1517,6 +1583,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitFunction_call" ):
                 listener.exitFunction_call(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunction_call" ):
+                return visitor.visitFunction_call(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1629,6 +1701,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitIncrement_decrement" ):
                 listener.exitIncrement_decrement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIncrement_decrement" ):
+                return visitor.visitIncrement_decrement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1714,6 +1792,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitPrint_call" ):
                 listener.exitPrint_call(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPrint_call" ):
+                return visitor.visitPrint_call(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -1814,6 +1898,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitTry_catch_statement" ):
                 listener.exitTry_catch_statement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTry_catch_statement" ):
+                return visitor.visitTry_catch_statement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1905,6 +1995,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitStop_statement" ):
                 listener.exitStop_statement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStop_statement" ):
+                return visitor.visitStop_statement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -1950,6 +2046,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitSkip_statement" ):
                 listener.exitSkip_statement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSkip_statement" ):
+                return visitor.visitSkip_statement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2000,6 +2102,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitReturn_statement" ):
                 listener.exitReturn_statement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturn_statement" ):
+                return visitor.visitReturn_statement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2070,6 +2178,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitBlock" ):
                 listener.exitBlock(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBlock" ):
+                return visitor.visitBlock(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2205,6 +2319,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitExpr" ):
                 listener.exitExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpr" ):
+                return visitor.visitExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2430,6 +2550,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitLogic_expr" ):
                 listener.exitLogic_expr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLogic_expr" ):
+                return visitor.visitLogic_expr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
     def logic_expr(self, _p:int=0):
@@ -2561,6 +2687,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitPrefix_increment_decrement" ):
                 listener.exitPrefix_increment_decrement(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPrefix_increment_decrement" ):
+                return visitor.visitPrefix_increment_decrement(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2615,6 +2747,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitPostfix_increment_decrement" ):
                 listener.exitPostfix_increment_decrement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPostfix_increment_decrement" ):
+                return visitor.visitPostfix_increment_decrement(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2698,6 +2836,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitData_structure" ):
                 listener.exitData_structure(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitData_structure" ):
+                return visitor.visitData_structure(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2845,6 +2989,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitBasic_data_type" ):
                 listener.exitBasic_data_type(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBasic_data_type" ):
+                return visitor.visitBasic_data_type(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2901,6 +3051,12 @@ class IffiParser ( Parser ):
             if hasattr( listener, "exitAdvanced_data_type" ):
                 listener.exitAdvanced_data_type(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAdvanced_data_type" ):
+                return visitor.visitAdvanced_data_type(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -2947,6 +3103,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitException_type" ):
                 listener.exitException_type(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitException_type" ):
+                return visitor.visitException_type(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -2997,6 +3159,12 @@ class IffiParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitAtom" ):
                 listener.exitAtom(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAtom" ):
+                return visitor.visitAtom(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
