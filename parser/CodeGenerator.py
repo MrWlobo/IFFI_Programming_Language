@@ -155,3 +155,9 @@ class CodeGenerator(IffiVisitor):
         elif ctx.TYPE_STRING():
             return "char*"
 
+    def visitPrint_call(self, ctx):
+        expr_value = self.visit(ctx.expr())
+        #  basic printing.
+        line = f"printf(\"%d\\n\", {expr_value});"
+        self.output.append(line)
+        return line
