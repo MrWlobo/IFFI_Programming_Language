@@ -1,13 +1,13 @@
 if (20 < 21):
-    var = 2 ** 9;
-    xd = 99 % 4;
+    int var = 2 ** 9;
+    int xd = 99 % 4;
 elif (9 == 9):
-    g = 2 + 3;
+    int g = 2 + 3;
 else:
     if (6 == 8):
-        ee = 9.13;
+        float ee = 9.13;
         ee2 = 8;
     else:
-        y = true;
+        bool y = true;
     fi
 fi
