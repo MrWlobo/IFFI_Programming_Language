@@ -143,6 +143,22 @@ class CodeGenerator(IffiVisitor):
 
         return None
 
+    def visitLoop(self, ctx:IffiParser.LoopContext):
+        self.output.append("while (true) {")
+        self.visit(ctx.block())
+        self.output.append("}")
+
+    def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
+        self.output.append(f"while ({self.visit(ctx.logic_expr())}) {{")
+        self.visit(ctx.block())
+        self.output.append("}")
+
+    def visitDo_while_loop(self, ctx:IffiParser.Do_while_loopContext):
+        self.output.append("do {")
+        self.visit(ctx.block())
+        self.output.append("}")
+        self.output.append(f"while ({self.visit(ctx.logic_expr())});")
+
     def visitBasic_data_type(self, ctx):
         if ctx.TYPE_INT():
             return "int"
