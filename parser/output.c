@@ -1,22 +1,16 @@
-
 #include<stdio.h>
 #include<math.h>
 #include<stdbool.h>
 int main() {
-if ((20 < 21)) {
-int var = pow(2, 9);
-int xd = (99 % 4);
-printf("%d\n", var);
+int myFunc(int a, int b, int c) {
+a = (a + b);
 }
-else if ((9 == 9)) {
-int g = (2 + 3);
+int fa = 7;
+while (true) {
+fa = (fa + 8);
+if ((fa > 100)) {
 }
-else {
-if ((6 == 8)) {
-float ee = 9.13;
+printf("%d\n", (2 + 1));
 }
-else {
-bool y = true;
+return 0;
 }
-}
-return 0;}

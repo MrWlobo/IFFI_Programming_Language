@@ -6,9 +6,31 @@ class CodeGenerator(IffiVisitor):
         self.output = []
 
     def visitStart_(self, ctx: IffiParser.Start_Context):
+        libraries = ["stdio.h", "math.h", "stdbool.h"]
+        for library in libraries:
+            self.output.append(f"#include<{library}>")
+        self.output.append("int main() {")
         for stmt_ctx in ctx.statement():
             self.visit(stmt_ctx)
+        self.output.append("return 0;")
+        self.output.append("}")
         return None
+
+    def visitStatement(self, ctx):
+        return self.visit(ctx.getChild(0))
+
+    def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
+        var_type = ctx.basic_data_type().getText()
+        var_name = ctx.ID().getText()
+
+        if ctx.expr():
+            value = self.visit(ctx.expr())
+            line = f"{var_type} {var_name} = {value};"
+        else:
+            line = f"{var_type} {var_name};"
+
+        self.output.append(line)
+        return line
 
     def visitAssignment(self, ctx: IffiParser.AssignmentContext):
         var_name = ctx.ID().getText()
@@ -17,18 +39,6 @@ class CodeGenerator(IffiVisitor):
         self.output.append(line)
         return line
 
-    def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
-        var_type = ctx.basic_data_type().getText()
-        var_name = ctx.ID().getText()
-
-        if ctx.expr():
-            value = self.visit(ctx.expr())  # np. "42"
-            line = f"{var_type} {var_name} = {value};"
-        else:
-            line = f"{var_type} {var_name};"
-
-        self.output.append(line)
-        return line
 
     def visitAtom(self, ctx):
         if ctx.INT():
@@ -112,8 +122,6 @@ class CodeGenerator(IffiVisitor):
         else:
             return self.visit(ctx.expr(0))
 
-    def visitStatement(self, ctx):
-        return self.visit(ctx.getChild(0))
 
     def visitBlock(self, ctx):
         for child in ctx.children:
@@ -159,6 +167,32 @@ class CodeGenerator(IffiVisitor):
         self.output.append("}")
         self.output.append(f"while ({self.visit(ctx.logic_expr())});")
 
+    # def visitFor_loop(self, ctx: IffiParser.For_loopContext):
+    #     var_type = self.visit(ctx.basic_data_type())
+    #     var_name = ctx.ID().getText()
+    #
+    #     collection_name = ""
+    #     if ctx.data_structure():
+    #         # You'd need to have logic in visitData_structure to return the name
+    #         # For simplicity, let's assume it returns the structure's identifier
+    #         collection_name = self.visit(ctx.data_structure())
+    #     elif ctx.ID(1):
+    #         collection_name = ctx.ID(1).getText()
+    #     else:
+    #         # This case should ideally not happen based on grammar
+    #         collection_name = "/* unknown_collection */"
+    #
+    #     # Assuming the collection has a .size or a function to get its size
+    #     # This is a simplification; a real scenario would need more sophisticated type tracking.
+    #     loop_variable = f"__i_{var_name}"  # Unique index variable name
+    #     size_expr = f"sizeof({collection_name}) / sizeof({collection_name}[0])"  # For static arrays
+    #
+    #     self.output.append(f"for (int {loop_variable} = 0; {loop_variable} < {size_expr}; {loop_variable}++) {{")
+    #     self.output.append(f"    {var_type} {var_name} = {collection_name}[{loop_variable}];")  # Assign current element
+    #     self.visit(ctx.block())
+    #     self.output.append("}")
+    #     return None
+
     def visitBasic_data_type(self, ctx):
         if ctx.TYPE_INT():
             return "int"
@@ -177,3 +211,23 @@ class CodeGenerator(IffiVisitor):
         line = f"printf(\"%d\\n\", {expr_value});"
         self.output.append(line)
         return line
+
+    def visitFunction(self, ctx:IffiParser.FunctionContext):
+        func_name = ctx.ID().getText()
+        return_type = self.visit(ctx.basic_data_type()) if ctx.basic_data_type() else "void"
+
+        args = []
+        if ctx.argument():
+            for arg_ctx in ctx.argument():
+                args.append(self.visit(arg_ctx))
+        args_str = ", ".join(args)
+
+        self.output.append(f"{return_type} {func_name}({args_str}) {{")
+        self.visit(ctx.block())
+        self.output.append("}")
+        return None
+
+    def visitArgument(self, ctx:IffiParser.ArgumentContext):
+        arg_type = self.visit(ctx.basic_data_type())
+        arg_name = ctx.ID().getText()
+        return f"{arg_type} {arg_name}"
