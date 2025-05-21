@@ -1,6 +1,8 @@
 list[int] lista = [1, 2, 3, 8, 99, 123, 90001];
+list[int] lista1 = [3, 2, 1];
 
 loop for (int i in lista):
-print(i);
-print(12);
+    loop for (int j in lista1):
+        print(j+i);
+    pool
 pool

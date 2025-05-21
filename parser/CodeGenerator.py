@@ -249,8 +249,16 @@ class CodeGenerator(IffiVisitor):
     def visitPrint_call(self, ctx):
         expr_value = self.visit(ctx.expr())
         #  basic printing.
-        if self.for_loop_depth > 0 and expr_value in self.for_loop_iterables:
-            line = f"printf(\"%d\\n\", current_{self.for_loop_iterables[expr_value]}_data);"
+        if self.for_loop_depth > 0:
+            expr_value = expr_value[1:-1]
+            expr_list = expr_value.split(" ")
+            line = f"printf(\"%d\\n\", "
+            for expr in expr_list:
+                if expr in self.for_loop_iterables:
+                    line += f"current_{self.for_loop_iterables[expr]}_data"
+                else:
+                    line += expr
+            line += ");"
         else:
             line = f"printf(\"%d\\n\", {expr_value});"
         self.output.append(line)
