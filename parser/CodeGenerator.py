@@ -59,8 +59,8 @@ class CodeGenerator(IffiVisitor):
         elif ctx.ID():
             return ctx.ID().getText()
 
-        elif ctx.function_call():
-            return self.visit(ctx.function_call())
+        elif ctx.function_call_expr():
+            return self.visit(ctx.function_call_expr())
 
         elif ctx.prefix_increment_decrement():
             return self.visit(ctx.prefix_increment_decrement())
@@ -236,6 +236,9 @@ class CodeGenerator(IffiVisitor):
         return f"{arg_type} {arg_name}"
 
     def visitFunction_call(self, ctx:IffiParser.Function_callContext):
+        return self.visit(ctx.function_call_expr())
+
+    def visitFunction_call_expr(self, ctx:IffiParser.Function_call_exprContext):
         func_name = ctx.ID().getText()
         args = []
         if ctx.expr():
@@ -244,3 +247,41 @@ class CodeGenerator(IffiVisitor):
         args_str = ", ".join(args)
         self.output.append(f"{func_name}({args_str});")
         return None
+
+    def visitIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
+        return self.visitChildren(ctx)
+
+    def visitStop_statement(self, ctx:IffiParser.Stop_statementContext):
+        self.output.append("break;")
+        return "break;"
+
+    def visitSkip_statement(self, ctx:IffiParser.Skip_statementContext):
+        self.output.append("continue;")
+        return "continue;"
+
+    def visitReturn_statement(self, ctx:IffiParser.Return_statementContext):
+        if ctx.logic_expr():
+            value = self.visit(ctx.logic_expr())
+            self.output.append(f"return {value};")
+            return f"return {value};"
+        else:
+            self.output.append("return;")
+            return "return;"
+
+    def visitPrefix_increment_decrement(self, ctx:IffiParser.Prefix_increment_decrementContext):
+        op = ctx.getChild(0).getText()
+        id_name = ctx.ID().getText()
+        return f"{op}{id_name}"
+
+    def visitPostfix_increment_decrement(self, ctx:IffiParser.Postfix_increment_decrementContext):
+        op = ctx.getChild(1).getText()
+        id_name = ctx.ID().getText()
+        return f"{id_name}{op}"
+
+    def visitData_structure(self, ctx:IffiParser.Data_structureContext):
+        return "/* TODO: Translate data structure ot C eqvalent */"
+
+    def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
+        return "/* TODO: Translate advanced data type to C equivalent */"
+
+

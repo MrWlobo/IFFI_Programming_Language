@@ -14,6 +14,9 @@ statement
     | function_call
     | increment_decrement
     | print_call
+    | stop_statement
+    | skip_statement
+    | return_statement
     ;
 
 declaration
@@ -60,12 +63,12 @@ argument
     ;
 
 function_call
-    : ID LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN SEMICOLON
+    : function_call_expr SEMICOLON
     ;
 
 increment_decrement
-    : ID (INCREMENT | DECREMENT) SEMICOLON
-    | (INCREMENT | DECREMENT) ID SEMICOLON
+    : prefix_increment_decrement SEMICOLON
+    | postfix_increment_decrement SEMICOLON
     ;
 
 print_call
@@ -81,31 +84,33 @@ skip_statement : T_SKIP SEMICOLON ;
 
 return_statement : T_RETURN logic_expr SEMICOLON ;
 
-block : ( statement | stop_statement | skip_statement | return_statement )+ ;
+block : ( statement )+ ;
 
 expr
     : ID
     | atom
-    | function_call
-    | expr (INCREMENT | DECREMENT)
-    | expr POWER expr
-    | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
-    | expr (PLUS | MINUS) expr
     | LEFT_PAREN expr RIGHT_PAREN
+    | function_call_expr
+    | data_structure
     | prefix_increment_decrement
     | postfix_increment_decrement
     | atom T_IN data_structure
     | atom T_IN ID
-    | data_structure
+    | expr POWER expr
+    | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
+    | expr (PLUS | MINUS) expr
     ;
 
 logic_expr
     : LEFT_PAREN logic_expr RIGHT_PAREN
     | NOT logic_expr
+    | expr ((EQUAL | NOT_EQUAL | LESS_THAN | GREATER_THAN | LESS_EQUAL | GREATER_EQUAL) expr)
     | logic_expr AND logic_expr
     | logic_expr OR logic_expr
-    | expr ((EQUAL | NOT_EQUAL | LESS_THAN | GREATER_THAN | LESS_EQUAL | GREATER_EQUAL) expr)?
+    | expr
     ;
+
+function_call_expr : ID LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN ;
 
 prefix_increment_decrement
     : (INCREMENT | DECREMENT) ID

@@ -3,12 +3,14 @@
 #include<stdbool.h>
 int main() {
 int myFunc(int a, int b, int c) {
-a = (a + b);
+c = (a + b);
+return c;
 }
 int fa = 7;
 while (true) {
 fa = (fa + 8);
 if ((fa > 100)) {
+break;
 }
 printf("%d\n", (2 + 1));
 }

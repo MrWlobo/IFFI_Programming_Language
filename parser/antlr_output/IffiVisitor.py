@@ -114,6 +114,11 @@ class IffiVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by IffiParser#function_call_expr.
+    def visitFunction_call_expr(self, ctx:IffiParser.Function_call_exprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by IffiParser#prefix_increment_decrement.
     def visitPrefix_increment_decrement(self, ctx:IffiParser.Prefix_increment_decrementContext):
         return self.visitChildren(ctx)

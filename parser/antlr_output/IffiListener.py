@@ -197,6 +197,15 @@ class IffiListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by IffiParser#function_call_expr.
+    def enterFunction_call_expr(self, ctx:IffiParser.Function_call_exprContext):
+        pass
+
+    # Exit a parse tree produced by IffiParser#function_call_expr.
+    def exitFunction_call_expr(self, ctx:IffiParser.Function_call_exprContext):
+        pass
+
+
     # Enter a parse tree produced by IffiParser#prefix_increment_decrement.
     def enterPrefix_increment_decrement(self, ctx:IffiParser.Prefix_increment_decrementContext):
         pass

@@ -1,5 +1,6 @@
 func myFunc(a: int, b: int, c: int) -> int:
-    a = a + b;
+    c = a + b;
+    return c;
 cnuf
 
 int fa = 7;
@@ -14,4 +15,5 @@ POOL
 
 IF (fa < 200):
     myFunc(fa, fa, fa);
+    #fa++;
 FI
