@@ -5,8 +5,6 @@ from antlr_output.IffiParser import IffiParser
 from antlr4.tree.Trees import Trees
 from CodeGenerator import CodeGenerator
 
-from VisitorInterp import VisitorInterp
-
 def pretty_print_tree(node, indent=0):
     indent_str = "  " * indent
     node_name = type(node).__name__
@@ -25,7 +23,7 @@ def main(argv):
     parser = IffiParser(stream)
     tree = parser.start_()
     # print(tree.toStringTree(recog=parser))
-    #pretty_print_tree(tree)
+    pretty_print_tree(tree)
     # print(Trees.toStringTree(tree, None, parser))
 
     generator = CodeGenerator()

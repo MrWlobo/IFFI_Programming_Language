@@ -56,6 +56,9 @@ class CodeGenerator(IffiVisitor):
         if ctx.atom():
             return self.visit(ctx.atom())
 
+        elif ctx.ID():
+            return ctx.ID().getText()
+
         elif ctx.function_call():
             return self.visit(ctx.function_call())
 
@@ -231,3 +234,13 @@ class CodeGenerator(IffiVisitor):
         arg_type = self.visit(ctx.basic_data_type())
         arg_name = ctx.ID().getText()
         return f"{arg_type} {arg_name}"
+
+    def visitFunction_call(self, ctx:IffiParser.Function_callContext):
+        func_name = ctx.ID().getText()
+        args = []
+        if ctx.expr():
+            for expr_ctx in ctx.expr():
+                args.append(self.visit(expr_ctx))
+        args_str = ", ".join(args)
+        self.output.append(f"{func_name}({args_str});")
+        return None

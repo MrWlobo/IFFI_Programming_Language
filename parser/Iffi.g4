@@ -60,7 +60,7 @@ argument
     ;
 
 function_call
-    : ID LEFT_PAREN ((ID | atom | data_structure) (COMMA (ID | atom | data_structure))*)? RIGHT_PAREN SEMICOLON
+    : ID LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN SEMICOLON
     ;
 
 increment_decrement
@@ -84,7 +84,8 @@ return_statement : T_RETURN logic_expr SEMICOLON ;
 block : ( statement | stop_statement | skip_statement | return_statement )+ ;
 
 expr
-    : atom
+    : ID
+    | atom
     | function_call
     | expr (INCREMENT | DECREMENT)
     | expr POWER expr

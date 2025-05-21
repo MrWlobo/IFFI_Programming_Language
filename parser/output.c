@@ -12,5 +12,8 @@ if ((fa > 100)) {
 }
 printf("%d\n", (2 + 1));
 }
+if ((fa < 200)) {
+myFunc(fa, fa, fa);
+}
 return 0;
 }

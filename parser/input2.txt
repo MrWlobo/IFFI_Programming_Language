@@ -11,3 +11,7 @@ LOOP:
     print(2+1);
     #komentarz
 POOL
+
+IF (fa < 200):
+    myFunc(fa, fa, fa);
+FI
