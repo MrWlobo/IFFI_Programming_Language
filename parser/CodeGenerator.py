@@ -5,6 +5,8 @@ import os
 class CodeGenerator(IffiVisitor):
     def __init__(self):
         self.output = []
+        self.for_loop_depth = 0
+        self.for_loop_iterables = {}
 
     def visitStart_(self, ctx: IffiParser.Start_Context):
         libraries = ["stdio.h", "math.h", "stdbool.h", "stdlib.h"]
@@ -43,7 +45,8 @@ class CodeGenerator(IffiVisitor):
             if ctx.data_structure():
                 for atom in ctx.data_structure().atom():
                     line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
-                line += f"\n{advanced_dt} current_{var_name} = {var_name};"
+                line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
+                line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"
 
         self.output.append(line)
         return line
@@ -176,18 +179,27 @@ class CodeGenerator(IffiVisitor):
         self.output.append("}")
 
     def visitFor_loop(self, ctx:IffiParser.For_loopContext):
+        self.for_loop_depth += 1
         var_type = self.visit(ctx.basic_data_type())
         var_name = ctx.ID(0).getText()
+
 
         if ctx.data_structure():
             iterable = self.visit(ctx.data_structure())
         else:
             iterable = ctx.ID(1).getText()
 
-        self.output.append(f"for ({var_type} {var_name} = 0; {var_name} < length(&{iterable}); {var_name}++) {{")
+        self.for_loop_iterables[var_name] = iterable
+
+        self.output.append(f"for ({var_type} {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
+        self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
+        self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
         self.output.append("}")
-        self.output.append(f"current_{iterable} = {iterable};")
+        self.output.append(f"current_{iterable} = &{iterable};")
+        self.output.append(f"current_{iterable}_data = current_{iterable}->data;")
+        self.for_loop_depth -= 1
+        del self.for_loop_iterables[var_name]
         return None
 
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
@@ -237,7 +249,10 @@ class CodeGenerator(IffiVisitor):
     def visitPrint_call(self, ctx):
         expr_value = self.visit(ctx.expr())
         #  basic printing.
-        line = f"printf(\"%d\\n\", {expr_value});"
+        if self.for_loop_depth > 0 and expr_value in self.for_loop_iterables:
+            line = f"printf(\"%d\\n\", current_{self.for_loop_iterables[expr_value]}_data);"
+        else:
+            line = f"printf(\"%d\\n\", {expr_value});"
         self.output.append(line)
         return line
 

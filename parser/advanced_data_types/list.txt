@@ -13,7 +13,7 @@ void intAdd(intlist_t* list, int element) {
     current->next->next = NULL;
 }
 
-int length(intlist_t* list) {
+int intLength(intlist_t* list) {
     intlist_t * current = list;
     int len = 0;
     while(current->next != NULL) {
