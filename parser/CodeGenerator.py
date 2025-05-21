@@ -43,7 +43,7 @@ class CodeGenerator(IffiVisitor):
             if ctx.data_structure():
                 for atom in ctx.data_structure().atom():
                     line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
-                line += "\n"
+                line += f"\n{advanced_dt} current_{var_name} = {var_name};"
 
         self.output.append(line)
         return line
@@ -184,9 +184,10 @@ class CodeGenerator(IffiVisitor):
         else:
             iterable = ctx.ID(1).getText()
 
-        self.output.append(f"for ({var_type} {var_name} : {iterable}) {{")
+        self.output.append(f"for ({var_type} {var_name} = 0; {var_name} < length(&{iterable}); {var_name}++) {{")
         self.visit(ctx.block())
         self.output.append("}")
+        self.output.append(f"current_{iterable} = {iterable};")
         return None
 
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
