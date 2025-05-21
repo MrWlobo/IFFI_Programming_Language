@@ -1,0 +1,24 @@
+typedef struct intlist {
+  int data;
+  struct intlist* next;
+} intlist_t;
+
+void intAdd(intlist_t* list, int element) {
+    intlist_t * current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->data = element;
+    current->next = (intlist_t*) malloc(sizeof(intlist_t));
+    current->next->next = NULL;
+}
+
+int intLength(intlist_t* list) {
+    intlist_t * current = list;
+    int len = 0;
+    while(current->next != NULL) {
+        len++;
+        current = current->next;
+    }
+    return len;
+}

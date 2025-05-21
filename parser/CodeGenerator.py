@@ -1,14 +1,24 @@
 from antlr_output.IffiVisitor import IffiVisitor
 from antlr_output.IffiParser import IffiParser
+import os
 
 class CodeGenerator(IffiVisitor):
     def __init__(self):
         self.output = []
 
     def visitStart_(self, ctx: IffiParser.Start_Context):
-        libraries = ["stdio.h", "math.h", "stdbool.h"]
+        libraries = ["stdio.h", "math.h", "stdbool.h", "stdlib.h"]
         for library in libraries:
             self.output.append(f"#include<{library}>")
+
+        folder_path = "advanced_data_types"
+        for filename in os.listdir(folder_path):
+            if filename.endswith('.txt'):
+                file_path = os.path.join(folder_path, filename)
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    self.output.append(content)
+
         self.output.append("int main() {")
         for stmt_ctx in ctx.statement():
             self.visit(stmt_ctx)
@@ -27,7 +37,13 @@ class CodeGenerator(IffiVisitor):
             value = self.visit(ctx.expr())
             line = f"{var_type} {var_name} = {value};"
         else:
-            line = f"{var_type} {var_name};"
+            advanced_dt = f"{var_type}{ctx.advanced_data_type().getText()}_t"
+            line = f"{advanced_dt} {var_name};"
+            line += f"{var_name}.next = NULL;"
+            if ctx.data_structure():
+                for atom in ctx.data_structure().atom():
+                    line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
+                line += "\n"
 
         self.output.append(line)
         return line
@@ -159,6 +175,20 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
 
+    def visitFor_loop(self, ctx:IffiParser.For_loopContext):
+        var_type = self.visit(ctx.basic_data_type())
+        var_name = ctx.ID(0).getText()
+
+        if ctx.data_structure():
+            iterable = self.visit(ctx.data_structure())
+        else:
+            iterable = ctx.ID(1).getText()
+
+        self.output.append(f"for ({var_type} {var_name} : {iterable}) {{")
+        self.visit(ctx.block())
+        self.output.append("}")
+        return None
+
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
         self.output.append(f"while ({self.visit(ctx.logic_expr())}) {{")
         self.visit(ctx.block())
@@ -169,32 +199,6 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
         self.output.append(f"while ({self.visit(ctx.logic_expr())});")
-
-    # def visitFor_loop(self, ctx: IffiParser.For_loopContext):
-    #     var_type = self.visit(ctx.basic_data_type())
-    #     var_name = ctx.ID().getText()
-    #
-    #     collection_name = ""
-    #     if ctx.data_structure():
-    #         # You'd need to have logic in visitData_structure to return the name
-    #         # For simplicity, let's assume it returns the structure's identifier
-    #         collection_name = self.visit(ctx.data_structure())
-    #     elif ctx.ID(1):
-    #         collection_name = ctx.ID(1).getText()
-    #     else:
-    #         # This case should ideally not happen based on grammar
-    #         collection_name = "/* unknown_collection */"
-    #
-    #     # Assuming the collection has a .size or a function to get its size
-    #     # This is a simplification; a real scenario would need more sophisticated type tracking.
-    #     loop_variable = f"__i_{var_name}"  # Unique index variable name
-    #     size_expr = f"sizeof({collection_name}) / sizeof({collection_name}[0])"  # For static arrays
-    #
-    #     self.output.append(f"for (int {loop_variable} = 0; {loop_variable} < {size_expr}; {loop_variable}++) {{")
-    #     self.output.append(f"    {var_type} {var_name} = {collection_name}[{loop_variable}];")  # Assign current element
-    #     self.visit(ctx.block())
-    #     self.output.append("}")
-    #     return None
 
     def visitBasic_data_type(self, ctx):
         if ctx.TYPE_INT():
@@ -207,6 +211,27 @@ class CodeGenerator(IffiVisitor):
             return "char"
         elif ctx.TYPE_STRING():
             return "char*"
+
+    def visitData_structure(self, ctx: IffiParser.Data_structureContext):
+        if ctx.LEFT_BRACKET():
+            # Lista
+            items = [self.visit(child) for child in ctx.atom()]
+            return "{" + ", ".join(items) + "}"  # np. {1, 2, 3} — styl C array initializer
+
+        elif ctx.LEFT_BRACE():
+            # Słownik
+            keys = ctx.atom()[::2]
+            values = ctx.atom()[1::2]
+            pairs = [f"{self.visit(k)}: {self.visit(v)}" for k, v in zip(keys, values)]
+            return "/* map not directly supported in C: " + ", ".join(pairs) + " */"
+
+        elif ctx.LEFT_PAREN():
+            # Krotka
+            items = [self.visit(child) for child in ctx.atom()]
+            return "/* tuple: (" + ", ".join(items) + ") */"
+
+        else:
+            return "/* unknown data structure */"
 
     def visitPrint_call(self, ctx):
         expr_value = self.visit(ctx.expr())
