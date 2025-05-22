@@ -1,0 +1,5 @@
+list[string] lista = ["xd", "ee", "texvc"];
+
+loop for (string i in lista):
+    print(i + i);
+pool

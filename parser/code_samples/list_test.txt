@@ -5,4 +5,5 @@ loop for (int i in lista):
     loop for (int j in lista1):
         print(j+i);
     pool
+    stop;
 pool
