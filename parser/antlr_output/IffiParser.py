@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,70,431,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,72,431,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -45,7 +45,7 @@ def serializedATN():
         3,24,418,8,24,1,24,3,24,421,8,24,1,25,1,25,1,26,1,26,1,27,1,27,1,
         28,1,28,1,28,0,2,38,40,29,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,
         30,32,34,36,38,40,42,44,46,48,50,52,54,56,0,7,1,0,47,50,1,0,45,46,
-        1,0,54,59,1,0,52,53,1,0,1,5,1,0,6,9,1,0,65,68,460,0,61,1,0,0,0,2,
+        1,0,54,59,1,0,52,53,1,0,1,5,1,0,6,9,1,0,65,70,460,0,61,1,0,0,0,2,
         80,1,0,0,0,4,101,1,0,0,0,6,133,1,0,0,0,8,135,1,0,0,0,10,160,1,0,
         0,0,12,189,1,0,0,0,14,191,1,0,0,0,16,200,1,0,0,0,18,210,1,0,0,0,
         20,234,1,0,0,0,22,240,1,0,0,0,24,249,1,0,0,0,26,251,1,0,0,0,28,257,
@@ -204,7 +204,7 @@ class IffiParser ( Parser ):
                       "NOT_EQUAL", "LESS_THAN", "LESS_EQUAL", "GREATER_THAN", 
                       "GREATER_EQUAL", "ASSIGN", "ASSIGN_PLUS", "ASSIGN_MINUS", 
                       "ASSIGN_MULTIPLY", "ASSIGN_DIVIDE", "INT", "FLOAT", 
-                      "ID", "BOOL", "WS", "LINE_COMMENT" ]
+                      "ID", "BOOL", "CHAR", "STRING", "WS", "LINE_COMMENT" ]
 
     RULE_start_ = 0
     RULE_statement = 1
@@ -314,8 +314,10 @@ class IffiParser ( Parser ):
     FLOAT=66
     ID=67
     BOOL=68
-    WS=69
-    LINE_COMMENT=70
+    CHAR=69
+    STRING=70
+    WS=71
+    LINE_COMMENT=72
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -2604,7 +2606,7 @@ class IffiParser ( Parser ):
             self.state = 369
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if ((((_la - 34)) & ~0x3f) == 0 and ((1 << (_la - 34)) & 32213041173) != 0):
+            if ((((_la - 34)) & ~0x3f) == 0 and ((1 << (_la - 34)) & 135292256277) != 0):
                 self.state = 361
                 self.expr(0)
                 self.state = 366
@@ -2834,7 +2836,7 @@ class IffiParser ( Parser ):
                 self.state = 388
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 15) != 0):
+                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 63) != 0):
                     self.state = 380
                     self.atom()
                     self.state = 385
@@ -2861,7 +2863,7 @@ class IffiParser ( Parser ):
                 self.state = 405
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 15) != 0):
+                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 63) != 0):
                     self.state = 392
                     self.atom()
                     self.state = 393
@@ -2896,7 +2898,7 @@ class IffiParser ( Parser ):
                 self.state = 417
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 15) != 0):
+                if ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 63) != 0):
                     self.state = 409
                     self.atom()
                     self.state = 414
@@ -3121,6 +3123,12 @@ class IffiParser ( Parser ):
         def BOOL(self):
             return self.getToken(IffiParser.BOOL, 0)
 
+        def CHAR(self):
+            return self.getToken(IffiParser.CHAR, 0)
+
+        def STRING(self):
+            return self.getToken(IffiParser.STRING, 0)
+
         def getRuleIndex(self):
             return IffiParser.RULE_atom
 
@@ -3150,7 +3158,7 @@ class IffiParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 428
             _la = self._input.LA(1)
-            if not(((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 15) != 0)):
+            if not(((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & 63) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)

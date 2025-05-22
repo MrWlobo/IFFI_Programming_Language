@@ -46,7 +46,10 @@ class CodeGenerator(IffiVisitor):
                 for atom in ctx.data_structure().atom():
                     line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
                 line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
-                line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"
+                if var_type != "string":
+                    line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"
+                else:
+                    line += f"\nchar* current_{var_name}_data = current_{var_name}->data;\n"
 
         self.output.append(line)
         return line
@@ -68,6 +71,10 @@ class CodeGenerator(IffiVisitor):
             return ctx.BOOL().getText()
         elif ctx.ID():
             return ctx.ID().getText()
+        elif ctx.CHAR():
+            return ctx.CHAR().getText()
+        elif ctx.STRING():
+            return ctx.STRING().getText()
         else:
             return "/* unknown atom */"
 
@@ -191,7 +198,7 @@ class CodeGenerator(IffiVisitor):
 
         self.for_loop_iterables[var_name] = iterable
 
-        self.output.append(f"for ({var_type} {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
+        self.output.append(f"for (int {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
