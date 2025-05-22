@@ -95,7 +95,7 @@ class CodeGenerator(IffiVisitor):
             if op == "**":
                 return f"pow({left}, {right})"
             else:
-                return f"({left} {op} {right})"
+                return f"{left} {op} {right}"
 
         elif ctx.getChildCount() == 2:
             expr = self.visit(ctx.expr(0))
@@ -250,7 +250,6 @@ class CodeGenerator(IffiVisitor):
         expr_value = self.visit(ctx.expr())
         #  basic printing.
         if self.for_loop_depth > 0:
-            expr_value = expr_value[1:-1]
             expr_list = expr_value.split(" ")
             line = f"printf(\"%d\\n\", "
             for expr in expr_list:
