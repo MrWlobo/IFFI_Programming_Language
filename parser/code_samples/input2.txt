@@ -15,5 +15,4 @@ POOL
 
 IF (fa < 200):
     myFunc(fa, fa, fa);
-    #fa++;
 FI

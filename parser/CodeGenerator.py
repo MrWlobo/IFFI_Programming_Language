@@ -32,14 +32,14 @@ class CodeGenerator(IffiVisitor):
         return self.visit(ctx.getChild(0))
 
     def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
-        var_type = ctx.basic_data_type().getText()
+        var_type = ctx.basic_data_type().getText().lower()
         var_name = ctx.ID().getText()
 
         if ctx.expr():
             value = self.visit(ctx.expr())
             line = f"{var_type} {var_name} = {value};"
         else:
-            advanced_dt = f"{var_type}{ctx.advanced_data_type().getText()}_t"
+            advanced_dt = f"{var_type}{ctx.advanced_data_type().getText().lower()}_t"
             line = f"{advanced_dt} {var_name};"
             line += f"{var_name}.next = NULL;"
             if ctx.data_structure():
