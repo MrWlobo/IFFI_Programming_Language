@@ -7,6 +7,7 @@ class CodeGenerator(IffiVisitor):
         self.output = []
         self.for_loop_depth = 0
         self.for_loop_iterables = {}
+        self.var_types = {}
 
     def visitStart_(self, ctx: IffiParser.Start_Context):
         libraries = ["stdio.h", "math.h", "stdbool.h", "stdlib.h"]
@@ -38,10 +39,12 @@ class CodeGenerator(IffiVisitor):
         if ctx.expr():
             value = self.visit(ctx.expr())
             line = f"{var_type} {var_name} = {value};"
+            self.var_types[var_name] = var_type
         else:
             advanced_dt = f"{var_type}{ctx.advanced_data_type().getText().lower()}_t"
             line = f"{advanced_dt} {var_name};"
             line += f"{var_name}.next = NULL;"
+            self.var_types[advanced_dt] = var_type
             if ctx.data_structure():
                 for atom in ctx.data_structure().atom():
                     line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
@@ -199,6 +202,7 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_iterables[var_name] = iterable
 
         self.output.append(f"for (int {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
+        self.var_types[var_name] = var_type
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
@@ -207,6 +211,7 @@ class CodeGenerator(IffiVisitor):
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;")
         self.for_loop_depth -= 1
         del self.for_loop_iterables[var_name]
+        del self.var_types[var_name]
         return None
 
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
@@ -255,18 +260,29 @@ class CodeGenerator(IffiVisitor):
 
     def visitPrint_call(self, ctx):
         expr_value = self.visit(ctx.expr())
-        #  basic printing.
+        expr_list = expr_value.split(" ")
+
+        # Determining the types of the variables in the expression
+        output_types = {"int": "d", "float": "f", "string": "s"}
+        output_type = ""
+        if all([self.var_types[expr] == self.var_types[expr_list[0]] for expr in expr_list if expr in self.var_types]):
+            output_type = output_types[self.var_types[expr_list[0]]]
+        else:
+            print("Błąd")
+
+        # Printing inside a loop
         if self.for_loop_depth > 0:
-            expr_list = expr_value.split(" ")
-            line = f"printf(\"%d\\n\", "
+            line = f"printf(\"%{output_type}\\n\", "
             for expr in expr_list:
+                # Handling the printing of iterators
                 if expr in self.for_loop_iterables:
                     line += f"current_{self.for_loop_iterables[expr]}_data"
                 else:
                     line += expr
             line += ");"
+        # Printing outside a loop
         else:
-            line = f"printf(\"%d\\n\", {expr_value});"
+            line = f"printf(\"%{output_type}\\n\", {expr_value});"
         self.output.append(line)
         return line
 
