@@ -64,6 +64,19 @@ int floatLength(float_list_t* list) {
     return len;
 }
 
+float floatGet(float_list_t* list, int index) {
+    float_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}
+
 
 // String list
 typedef struct stringlist {
@@ -89,4 +102,17 @@ int stringLength(string_list_t* list) {
         current = current->next;
     }
     return len;
+}
+
+char* stringGet(string_list_t* list, int index) {
+    string_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
 }

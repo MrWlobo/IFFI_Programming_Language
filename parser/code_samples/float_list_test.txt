@@ -1,6 +1,11 @@
 list[float] lista = [4.56, 453.34213, 765.5, 43.5, 0.002];
 list[float] lista1 = [4.9, 453.9, 765.7, 43.6, 0.6];
 
+float flt = lista[4];
+print(flt);
+int one = 1;
+print(one);
+
 loop for (float i in lista):
     loop for (float j in lista1):
         print(i + j);

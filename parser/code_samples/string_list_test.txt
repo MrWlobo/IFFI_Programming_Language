@@ -1,5 +1,8 @@
 list[string] lista = ["xd", "ee", "texvc"];
 
+string s = lista[1];
+print(s);
+
 loop for (string i in lista):
-    print(i + i);
+    print(i);
 pool
