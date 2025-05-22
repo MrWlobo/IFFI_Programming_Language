@@ -33,12 +33,15 @@ class CodeGenerator(IffiVisitor):
         return self.visit(ctx.getChild(0))
 
     def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
-        var_type = ctx.basic_data_type().getText().lower()
+        var_type = ctx.basic_data_type().getText()
         var_name = ctx.ID().getText()
 
         if ctx.expr():
             value = self.visit(ctx.expr())
-            line = f"{var_type} {var_name} = {value};"
+            if var_type != "string":
+                line = f"{var_type} {var_name} = {value};\n"
+            else:
+                line = f"char* {var_name} = {value}\n"
             self.var_types[var_name] = var_type
         else:
             advanced_dt = f"{var_type}_{ctx.advanced_data_type().getText().lower()}_t"
@@ -103,7 +106,7 @@ class CodeGenerator(IffiVisitor):
             op = ctx.getChild(1).getText()
 
             if op == "**":
-                return f"pow({left}, {right})"
+                return f"(pow( {left} , {right} ))"
             else:
                 return f"{left} {op} {right}"
 
@@ -129,7 +132,9 @@ class CodeGenerator(IffiVisitor):
         elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
             data_structure_name = ctx.ID().getText()
             index = self.visit(ctx.expr(0))
-            return f"{self.var_types[data_structure_name].split("_")[0]}Get(&{data_structure_name}, {index});"
+
+            basic_data_type = self.var_types[data_structure_name].split("_")[0]
+            return f"{basic_data_type}Get(&{data_structure_name}, {index});"
 
         else:
             return "/* Unsupported expr */"
@@ -198,7 +203,6 @@ class CodeGenerator(IffiVisitor):
         var_type = self.visit(ctx.basic_data_type())
         var_name = ctx.ID(0).getText()
 
-
         if ctx.data_structure():
             iterable = self.visit(ctx.data_structure())
         else:
@@ -207,7 +211,7 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_iterables[var_name] = iterable
 
         self.output.append(f"for (int {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
-        self.var_types[var_name] = var_type
+        self.var_types[var_name] = var_type if var_type != "char*" else "string"
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
@@ -240,7 +244,7 @@ class CodeGenerator(IffiVisitor):
         elif ctx.TYPE_CHAR():
             return "char"
         elif ctx.TYPE_STRING():
-            return "char*"
+            return "string"
 
     def visitData_structure(self, ctx: IffiParser.Data_structureContext):
         if ctx.LEFT_BRACKET():
