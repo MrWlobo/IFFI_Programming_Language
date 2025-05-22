@@ -99,6 +99,7 @@ expr
     | expr POWER expr
     | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
     | expr (PLUS | MINUS) expr
+    | ID LEFT_BRACKET expr RIGHT_BRACKET
     ;
 
 logic_expr

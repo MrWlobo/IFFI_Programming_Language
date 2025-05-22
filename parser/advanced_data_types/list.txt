@@ -2,20 +2,20 @@
 typedef struct intlist {
   int data;
   struct intlist* next;
-} intlist_t;
+} int_list_t;
 
-void intAdd(intlist_t* list, int element) {
-    intlist_t * current = list;
+void intAdd(int_list_t* list, int element) {
+    int_list_t * current = list;
     while (current->next != NULL) {
         current = current->next;
     }
     current->data = element;
-    current->next = (intlist_t*) malloc(sizeof(intlist_t));
+    current->next = (int_list_t*) malloc(sizeof(int_list_t));
     current->next->next = NULL;
 }
 
-int intLength(intlist_t* list) {
-    intlist_t * current = list;
+int intLength(int_list_t* list) {
+    int_list_t * current = list;
     int len = 0;
     while(current->next != NULL) {
         len++;
@@ -24,25 +24,38 @@ int intLength(intlist_t* list) {
     return len;
 }
 
+int intGet(int_list_t* list, int index) {
+    int_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}
+
 
 // Float list
 typedef struct floatlist {
   float data;
   struct floatlist* next;
-} floatlist_t;
+} float_list_t;
 
-void floatAdd(floatlist_t* list, float element) {
-    floatlist_t * current = list;
+void floatAdd(float_list_t* list, float element) {
+    float_list_t * current = list;
     while (current->next != NULL) {
         current = current->next;
     }
     current->data = element;
-    current->next = (floatlist_t*) malloc(sizeof(floatlist_t));
+    current->next = (float_list_t*) malloc(sizeof(float_list_t));
     current->next->next = NULL;
 }
 
-int floatLength(floatlist_t* list) {
-    floatlist_t * current = list;
+int floatLength(float_list_t* list) {
+    float_list_t * current = list;
     int len = 0;
     while(current->next != NULL) {
         len++;
@@ -56,20 +69,20 @@ int floatLength(floatlist_t* list) {
 typedef struct stringlist {
   char* data;
   struct stringlist* next;
-} stringlist_t;
+} string_list_t;
 
-void stringAdd(stringlist_t* list, char* element) {
-    stringlist_t * current = list;
+void stringAdd(string_list_t* list, char* element) {
+    string_list_t * current = list;
     while (current->next != NULL) {
         current = current->next;
     }
     current->data = element;
-    current->next = (stringlist_t*) malloc(sizeof(stringlist_t));
+    current->next = (string_list_t*) malloc(sizeof(string_list_t));
     current->next->next = NULL;
 }
 
-int stringLength(stringlist_t* list) {
-    stringlist_t * current = list;
+int stringLength(string_list_t* list) {
+    string_list_t * current = list;
     int len = 0;
     while(current->next != NULL) {
         len++;

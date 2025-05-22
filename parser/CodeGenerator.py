@@ -41,10 +41,10 @@ class CodeGenerator(IffiVisitor):
             line = f"{var_type} {var_name} = {value};"
             self.var_types[var_name] = var_type
         else:
-            advanced_dt = f"{var_type}{ctx.advanced_data_type().getText().lower()}_t"
+            advanced_dt = f"{var_type}_{ctx.advanced_data_type().getText().lower()}_t"
             line = f"{advanced_dt} {var_name};"
             line += f"{var_name}.next = NULL;"
-            self.var_types[advanced_dt] = var_type
+            self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
                 for atom in ctx.data_structure().atom():
                     line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
@@ -85,7 +85,7 @@ class CodeGenerator(IffiVisitor):
         if ctx.atom():
             return self.visit(ctx.atom())
 
-        elif ctx.ID():
+        elif ctx.ID() and ctx.getChildCount() == 1:
             return ctx.ID().getText()
 
         elif ctx.function_call_expr():
@@ -125,6 +125,11 @@ class CodeGenerator(IffiVisitor):
 
         elif ctx.data_structure():
             return self.visit(ctx.data_structure())
+
+        elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
+            data_structure_name = ctx.ID().getText()
+            index = self.visit(ctx.expr(0))
+            return f"{self.var_types[data_structure_name].split("_")[0]}Get(&{data_structure_name}, {index});"
 
         else:
             return "/* Unsupported expr */"

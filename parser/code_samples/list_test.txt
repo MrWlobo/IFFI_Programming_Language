@@ -1,6 +1,9 @@
 list[int] lista = [1, 2, 3, 8, 99, 123, 90001];
 list[int] lista1 = [3, 2, 1];
 
+int xd = lista[5];
+print(xd);
+
 loop for (int i in lista):
     loop for (int j in lista1):
         print(j+i);
