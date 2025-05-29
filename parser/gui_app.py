@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import scrolledtext, messagebox, filedialog
+from tklinenums import TkLineNumbers
 import subprocess
 import os
 import sys
@@ -35,11 +36,39 @@ class IffiCompilerGUI:
         master.grid_columnconfigure(1, weight=1)  # Changed to grid_column_configure
 
         # --- Iffi Code Input ---
-        self.iffi_label = tk.Label(master, text="IFFI Code:")
-        self.iffi_label.grid(row=0, column=0, sticky="n", padx=5, pady=2, columnspan=2)
-        self.iffi_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=60, height=18, font=("Consolas", 10))
-        self.iffi_text.grid(row=0, column=0, sticky="nsew", padx=5, pady=(25, 5), columnspan=2)
+        # --- Iffi Code Input (Top Row, spans both columns) ---
+        self.iffi_label = tk.Label(master, text="Iffi Code:")
+        self.iffi_label.grid(row=0, column=0, sticky="nw", padx=5, pady=2, columnspan=2)
+
+        # Create a frame for Iffi code and its line numbers
+        self.iffi_frame = tk.Frame(master)
+        self.iffi_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=(25, 5), columnspan=2)
+
+        self.iffi_text = scrolledtext.ScrolledText(self.iffi_frame, wrap=tk.WORD, width=60, height=20,
+                                                   font=("Consolas", 10))
+        self.iffi_text.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)  # Pack into the frame
+
+        # Initialize tklinenums for Iffi code
+        self.iffi_linenumbers = TkLineNumbers(self.iffi_frame, self.iffi_text, justify="left",
+                                                         colors=("#2192FF", "#FFFFFF"))
+        self.iffi_linenumbers.pack(side=tk.LEFT, fill=tk.Y)  # Pack into the frame
+
+        # Link scrolling
+        # self.iffi_text.vbar.config(command=self.iffi_linenumbers.redraw)
+        self.iffi_linenumbers.bind_all("<MouseWheel>",
+                                       lambda event: self.iffi_text.yview_scroll(int(-1 * (event.delta / 120)),
+                                                                                 "units"))
+        self.iffi_linenumbers.bind_all("<Button-4>", lambda event: self.iffi_text.yview_scroll(-1, "units"))
+        self.iffi_linenumbers.bind_all("<Button-5>", lambda event: self.iffi_text.yview_scroll(1, "units"))
+        self.iffi_text.bind("<<Modified>>", lambda event: self.iffi_linenumbers.redraw())  # Redraw on text modification
+        self.iffi_text.edit_modified(False)  # Reset modified flag initially
         self.iffi_text.insert(tk.END, self.iffi_code)
+
+        # linenums = TkLineNumbers(root, self.iffi_text, justify="center", colors=("#2197db", "#ffffff"))
+        # linenums.pack(fill="y", side="left")
+        #
+        # # Redraw the line numbers when the text widget contents are modified
+        # self.iffi_text.bind("<<Modified>>", lambda event: root.after_idle(linenums.redraw), add=True)
 
         # --- C Code Output ---
         self.c_label = tk.Label(master, text="Generated C Code:")
@@ -63,11 +92,16 @@ class IffiCompilerGUI:
         self.status_bar = tk.Label(master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_bar.grid(row=3, column=0, columnspan=2, sticky="ew")
 
-    def update_text_area(self, text_widget, content):
+    def update_text_area(self, text_widget, content, error=False, linenumbers_widget=None):
         text_widget.config(state=tk.NORMAL)
         text_widget.delete(1.0, tk.END)
         text_widget.insert(tk.END, content)
         text_widget.config(state=tk.DISABLED)
+        text_widget.edit_modified(True)  # Set modified flag to trigger redraw
+        if linenumbers_widget:
+            linenumbers_widget.redraw()  # Explicitly redraw line numbers
+        if error:
+            text_widget.config(fg="#f00")
 
     def generate_compile_run(self):
         self.status_bar.config(text="Processing...")
@@ -90,9 +124,14 @@ class IffiCompilerGUI:
 
             generator = CodeGenerator()  # Instantiate CodeGenerator
             generator.visit(tree)
-            generated_c_code = "\n".join(generator.output)
-            self.update_text_area(self.c_text, generated_c_code)
-            self.status_bar.config(text="C Code Generated.")
+            if generator.error is not None:
+                self.update_text_area(self.c_text, f"Error [{generator.error[1]}]: {generator.error[0]}", error=True)
+                self.status_bar.config(text="Error.")
+                return
+            else:
+                generated_c_code = "\n".join(generator.output)
+                self.update_text_area(self.c_text, generated_c_code)
+                self.status_bar.config(text="C Code Generated.")
 
         except Exception as e:
             messagebox.showerror("Code Generation Error", f"An error occurred during C code generation: {e}")
