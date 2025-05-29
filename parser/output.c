@@ -2,23 +2,24 @@
 #include<math.h>
 #include<stdbool.h>
 #include<stdlib.h>
+//Int List
 typedef struct intlist {
   int data;
   struct intlist* next;
-} intlist_t;
+} int_list_t;
 
-void intAdd(intlist_t* list, int element) {
-    intlist_t * current = list;
+void intAdd(int_list_t* list, int element) {
+    int_list_t * current = list;
     while (current->next != NULL) {
         current = current->next;
     }
     current->data = element;
-    current->next = (intlist_t*) malloc(sizeof(intlist_t));
+    current->next = (int_list_t*) malloc(sizeof(int_list_t));
     current->next->next = NULL;
 }
 
-int intLength(intlist_t* list) {
-    intlist_t * current = list;
+int intLength(int_list_t* list) {
+    int_list_t * current = list;
     int len = 0;
     while(current->next != NULL) {
         len++;
@@ -27,13 +28,63 @@ int intLength(intlist_t* list) {
     return len;
 }
 
-intlist_t default_intlist;
+int intGet(int_list_t* list, int index) {
+    int_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}
+//Int List
+typedef struct intlist {
+  int data;
+  struct intlist* next;
+} int_list_t;
+
+void intAdd(int_list_t* list, int element) {
+    int_list_t * current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->data = element;
+    current->next = (int_list_t*) malloc(sizeof(int_list_t));
+    current->next->next = NULL;
+}
+
+int intLength(int_list_t* list) {
+    int_list_t * current = list;
+    int len = 0;
+    while(current->next != NULL) {
+        len++;
+        current = current->next;
+    }
+    return len;
+}
+
+int intGet(int_list_t* list, int index) {
+    int_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}
 int main() {
 int myFunc(int a, int b, int c) {
 c = a + b;
 return c;
 }
 int fa = 7;
+
 while (true) {
 fa = fa + 8;
 if ((fa > 100)) {
@@ -41,7 +92,7 @@ printf("%d\n", fa);
 break;
 }
 }
-intlist_t lista;lista.next = NULL;
+int_list_t lista;lista.next = NULL;
 intAdd(&lista, 1);
 intAdd(&lista, 2);
 intAdd(&lista, 3);
@@ -49,14 +100,14 @@ intAdd(&lista, 8);
 intAdd(&lista, 99);
 intAdd(&lista, 123);
 intAdd(&lista, 90001);
-intlist_t* current_lista = &lista;
+int_list_t* current_lista = &lista;
 int current_lista_data = current_lista->data;
 
-intlist_t lista1;lista1.next = NULL;
+int_list_t lista1;lista1.next = NULL;
 intAdd(&lista1, 3);
 intAdd(&lista1, 2);
 intAdd(&lista1, 1);
-intlist_t* current_lista1 = &lista1;
+int_list_t* current_lista1 = &lista1;
 int current_lista1_data = current_lista1->data;
 
 for (int i = 0; i < intLength(&lista); i++) {

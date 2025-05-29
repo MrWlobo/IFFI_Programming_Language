@@ -1,0 +1,38 @@
+// String list
+typedef struct stringlist {
+  char* data;
+  struct stringlist* next;
+} string_list_t;
+
+void stringAdd(string_list_t* list, char* element) {
+    string_list_t * current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->data = element;
+    current->next = (string_list_t*) malloc(sizeof(string_list_t));
+    current->next->next = NULL;
+}
+
+int stringLength(string_list_t* list) {
+    string_list_t * current = list;
+    int len = 0;
+    while(current->next != NULL) {
+        len++;
+        current = current->next;
+    }
+    return len;
+}
+
+char* stringGet(string_list_t* list, int index) {
+    string_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}

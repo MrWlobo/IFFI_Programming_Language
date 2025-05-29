@@ -1,0 +1,38 @@
+// Float list
+typedef struct floatlist {
+  float data;
+  struct floatlist* next;
+} float_list_t;
+
+void floatAdd(float_list_t* list, float element) {
+    float_list_t * current = list;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->data = element;
+    current->next = (float_list_t*) malloc(sizeof(float_list_t));
+    current->next->next = NULL;
+}
+
+int floatLength(float_list_t* list) {
+    float_list_t * current = list;
+    int len = 0;
+    while(current->next != NULL) {
+        len++;
+        current = current->next;
+    }
+    return len;
+}
+
+float floatGet(float_list_t* list, int index) {
+    float_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    return current->data;
+}
