@@ -30,7 +30,6 @@ assignment
     | ID ASSIGN_MINUS expr SEMICOLON
     | ID ASSIGN_MULTIPLY expr SEMICOLON
     | ID ASSIGN_DIVIDE expr SEMICOLON
-    | ID ASSIGN data_structure SEMICOLON
     ;
 
 if_statement
@@ -75,7 +74,7 @@ print_call
     : PRINT LEFT_PAREN expr RIGHT_PAREN SEMICOLON ;
     
 try_catch_statement
-    : T_TRY COLON T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block (T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block)* T_FINALLY COLON block T_YRT
+    : T_TRY COLON T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block (T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block)+ (T_FINALLY COLON block)? T_YRT
     ;
 
 stop_statement : T_STOP SEMICOLON ;
@@ -84,22 +83,21 @@ skip_statement : T_SKIP SEMICOLON ;
 
 return_statement : T_RETURN logic_expr SEMICOLON ;
 
-block : ( statement )+ ;
+block : ( statement )* ;
 
 expr
-    : ID
-    | atom
-    | LEFT_PAREN expr RIGHT_PAREN
+    : ID LEFT_BRACKET expr RIGHT_BRACKET
     | function_call_expr
-    | data_structure
     | prefix_increment_decrement
     | postfix_increment_decrement
-    | atom T_IN data_structure
-    | atom T_IN ID
+    | atom
+    | LEFT_PAREN expr RIGHT_PAREN
     | expr POWER expr
     | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
     | expr (PLUS | MINUS) expr
-    | ID LEFT_BRACKET expr RIGHT_BRACKET
+    | ID T_IN data_structure
+    | ID T_IN ID
+    | data_structure
     ;
 
 logic_expr
@@ -122,9 +120,9 @@ postfix_increment_decrement
     ;
 
 data_structure
-    : LEFT_BRACKET (atom (COMMA atom)*)? RIGHT_BRACKET
-    | LEFT_BRACE (atom COLON atom (COMMA atom COLON atom)*)? RIGHT_BRACE
-    | LEFT_PAREN (atom (COMMA atom)*)? RIGHT_PAREN
+    : LEFT_BRACKET (expr (COMMA expr)*)? RIGHT_BRACKET
+    | LEFT_BRACE (expr COLON expr (COMMA expr COLON expr)*)? RIGHT_BRACE
+    | LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN
     ;
 
 // Keywords
@@ -204,9 +202,9 @@ exception_type
 
 
 atom
-    : INT
+    : ID
+    | INT
     | FLOAT
-    | ID
     | BOOL
     | CHAR
     | STRING

@@ -6,16 +6,20 @@ class CodeGenerator(IffiVisitor):
     def __init__(self):
         self.output = []
         self.int_main_index = 0
+        self.list_types = []
         self.for_loop_depth = 0
         self.for_loop_iterables = {}
         self.var_types = {}
 
     def addDataStructureHandling(self, var_type):
+        if var_type in self.list_types:
+            return
         folder_path = "advanced_data_types"
         file_path = os.path.join(folder_path, f"{var_type}list.txt")
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
             self.output.insert(self.int_main_index, content)
+        self.list_types.append(var_type)
 
     def visitStart_(self, ctx: IffiParser.Start_Context):
         libraries = ["stdio.h", "math.h", "stdbool.h", "stdlib.h"]
@@ -51,8 +55,8 @@ class CodeGenerator(IffiVisitor):
             line += f"{var_name}.next = NULL;"
             self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
-                for atom in ctx.data_structure().atom():
-                    line += f"\n{var_type}Add(&{var_name}, {self.visit(atom)});"
+                for expr in ctx.data_structure().expr():
+                    line += f"\n{var_type}Add(&{var_name}, {self.visit(expr)});"
                 line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
                 if var_type != "string":
                     line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"

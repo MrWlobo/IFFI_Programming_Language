@@ -40,44 +40,6 @@ int intGet(int_list_t* list, int index) {
     }
     return current->data;
 }
-//Int List
-typedef struct intlist {
-  int data;
-  struct intlist* next;
-} int_list_t;
-
-void intAdd(int_list_t* list, int element) {
-    int_list_t * current = list;
-    while (current->next != NULL) {
-        current = current->next;
-    }
-    current->data = element;
-    current->next = (int_list_t*) malloc(sizeof(int_list_t));
-    current->next->next = NULL;
-}
-
-int intLength(int_list_t* list) {
-    int_list_t * current = list;
-    int len = 0;
-    while(current->next != NULL) {
-        len++;
-        current = current->next;
-    }
-    return len;
-}
-
-int intGet(int_list_t* list, int index) {
-    int_list_t * current = list;
-    int current_index = 0;
-    while(current->next != NULL) {
-        if(current_index == index) {
-            break;
-        }
-        current_index++;
-        current = current->next;
-    }
-    return current->data;
-}
 int main() {
 int myFunc(int a, int b, int c) {
 c = a + b;
