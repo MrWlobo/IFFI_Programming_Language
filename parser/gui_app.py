@@ -15,8 +15,29 @@ sys.path.append(antlr_output_dir)
 from antlr4 import InputStream, CommonTokenStream
 from antlr_output.IffiLexer import IffiLexer
 from antlr_output.IffiParser import IffiParser
+from antlr4.error.ErrorListener import ErrorListener
 from CodeGenerator import CodeGenerator
 
+
+class CustomErrorListener(ErrorListener):
+    def __init__(self):
+        super().__init__()
+        self.errors = [] # A list to store all captured error messages
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        """
+        This method is called by ANTLR when a syntax error is detected.
+
+        Args:
+            recognizer: The parser instance.
+            offendingSymbol: The token that caused the syntax error.
+            line: The line number where the error occurred.
+            column: The column number where the error occurred.
+            msg: The error message from ANTLR.
+            e: The recognition exception.
+        """
+        # Format the error message and add it to our list
+        self.errors.append(f"Line {line}:{column} {msg}")
 
 class IffiCompilerGUI:
     def __init__(self, master):
@@ -120,11 +141,24 @@ class IffiCompilerGUI:
             lexer = IffiLexer(input_stream)
             stream = CommonTokenStream(lexer)
             parser = IffiParser(stream)
+
+            error_listener = CustomErrorListener()
+            parser.removeErrorListeners()
+            lexer.removeErrorListeners()
+
+            parser.addErrorListener(error_listener)
+            lexer.addErrorListener(error_listener)
+
             tree = parser.start_()
+
+            if error_listener.errors:
+                syntax_errors_str = '\n'.join(error_listener.errors)
+                self.update_text_area(self.c_text, syntax_errors_str, error=True)
+                return
 
             generator = CodeGenerator()  # Instantiate CodeGenerator
             generator.visit(tree)
-            if generator.error is not None:
+            if generator.error:
                 self.update_text_area(self.c_text, f"Error [{generator.error[1]}]: {generator.error[0]}", error=True)
                 self.status_bar.config(text="Error.")
                 return
@@ -134,7 +168,8 @@ class IffiCompilerGUI:
                 self.status_bar.config(text="C Code Generated.")
 
         except Exception as e:
-            messagebox.showerror("Code Generation Error", f"An error occurred during C code generation: {e}")
+            # messagebox.showerror("Code Generation Error", f"An error occurred during C code generation: {e}")
+            self.update_text_area(self.c_text, e, error=True)
             self.status_bar.config(text="Error")
             return
 
