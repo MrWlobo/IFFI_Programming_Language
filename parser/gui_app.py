@@ -42,7 +42,7 @@ class CustomErrorListener(ErrorListener):
 class IffiCompilerGUI:
     def __init__(self, master):
         self.master = master
-        with open('./code_samples/working_example.txt', 'r', encoding='utf-8') as f:
+        with open('./code_samples/input2.txt', 'r', encoding='utf-8') as f:
             content = f.read()
             self.iffi_code = content
 
@@ -54,7 +54,7 @@ class IffiCompilerGUI:
         master.grid_rowconfigure(2, weight=1)  # C Code area
         master.grid_rowconfigure(3, weight=0)  # Output area
         master.grid_columnconfigure(0, weight=1)
-        master.grid_columnconfigure(1, weight=1)  # Changed to grid_column_configure
+        master.grid_columnconfigure(1, weight=1)
 
         # --- Iffi Code Input ---
         # --- Iffi Code Input (Top Row, spans both columns) ---
@@ -75,21 +75,22 @@ class IffiCompilerGUI:
         self.iffi_linenumbers.pack(side=tk.LEFT, fill=tk.Y)  # Pack into the frame
 
         # Link scrolling
-        # self.iffi_text.vbar.config(command=self.iffi_linenumbers.redraw)
+        self.iffi_text.vbar.config(command=self.iffi_linenumbers.redraw) # Link the scrollbar to redraw
         self.iffi_linenumbers.bind_all("<MouseWheel>",
                                        lambda event: self.iffi_text.yview_scroll(int(-1 * (event.delta / 120)),
                                                                                  "units"))
         self.iffi_linenumbers.bind_all("<Button-4>", lambda event: self.iffi_text.yview_scroll(-1, "units"))
         self.iffi_linenumbers.bind_all("<Button-5>", lambda event: self.iffi_text.yview_scroll(1, "units"))
-        self.iffi_text.bind("<<Modified>>", lambda event: self.iffi_linenumbers.redraw())  # Redraw on text modification
+
+        # --- NEW BINDINGS FOR AUTOMATIC LINE NUMBER UPDATE ---
+        self.iffi_text.bind("<KeyRelease>", lambda event: self.iffi_linenumbers.redraw())
+        self.iffi_text.bind("<BackSpace>", lambda event: self.iffi_linenumbers.redraw())
+        self.iffi_text.bind("<Return>", lambda event: self.iffi_linenumbers.redraw())
+        self.iffi_text.bind("<<Modified>>", lambda event: self.iffi_linenumbers.redraw()) # Keep this for other operations
+
         self.iffi_text.edit_modified(False)  # Reset modified flag initially
         self.iffi_text.insert(tk.END, self.iffi_code)
 
-        # linenums = TkLineNumbers(root, self.iffi_text, justify="center", colors=("#2197db", "#ffffff"))
-        # linenums.pack(fill="y", side="left")
-        #
-        # # Redraw the line numbers when the text widget contents are modified
-        # self.iffi_text.bind("<<Modified>>", lambda event: root.after_idle(linenums.redraw), add=True)
 
         # --- C Code Output ---
         self.c_label = tk.Label(master, text="Generated C Code:")
@@ -106,8 +107,17 @@ class IffiCompilerGUI:
         self.output_text.config(state=tk.DISABLED)  # Make read-only
 
         # --- Buttons ---
-        self.compile_run_button = tk.Button(master, text="Generate C, Compile & Run", command=self.generate_compile_run)
-        self.compile_run_button.grid(row=1, column=0, columnspan=2, pady=10)
+        # Create a frame for the buttons to better control their layout
+        self.button_frame = tk.Frame(master)
+        self.button_frame.grid(row=1, column=0, columnspan=2, pady=10)
+
+        # Changed button text and command
+        self.load_file_button = tk.Button(self.button_frame, text="Load Iffi File", command=self.load_iffi_file)
+        self.load_file_button.pack(side=tk.LEFT, padx=5)
+
+        self.compile_run_button = tk.Button(self.button_frame, text="Generate C, Compile & Run", command=self.generate_compile_run)
+        self.compile_run_button.pack(side=tk.LEFT, padx=5)
+
 
         # --- Status Bar ---
         self.status_bar = tk.Label(master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
@@ -118,11 +128,41 @@ class IffiCompilerGUI:
         text_widget.delete(1.0, tk.END)
         text_widget.insert(tk.END, content)
         text_widget.config(state=tk.DISABLED)
-        text_widget.edit_modified(True)  # Set modified flag to trigger redraw
-        if linenumbers_widget:
-            linenumbers_widget.redraw()  # Explicitly redraw line numbers
+        # We don't set edit_modified(True) for output areas as they are read-only
+        # and don't have associated line numbers that need redraw based on their content.
+        if linenumbers_widget: # This check is good practice, though unlikely to be True for output areas
+            linenumbers_widget.redraw() # Explicitly redraw line numbers if associated
+
         if error:
             text_widget.config(fg="#f00")
+        else:
+            text_widget.config(fg="#000")
+
+    def load_iffi_file(self):
+        """
+        Opens a file dialog to select a file and loads its content
+        into the iffi_text scrolled text area.
+        """
+        file_path = filedialog.askopenfilename(
+            initialdir="./code_samples",  # Suggests starting in the 'code_samples' directory
+            title="Select Iffi File",
+            filetypes=(("Iffi files", "*.txt"), ("All files", "*.*"))
+        )
+        if file_path:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                self.iffi_text.config(state=tk.NORMAL)
+                self.iffi_text.delete(1.0, tk.END)
+                self.iffi_text.insert(tk.END, content)
+                self.iffi_text.config(state=tk.NORMAL) # Keep it editable after loading
+                self.iffi_text.edit_modified(True) # Set modified flag to trigger redraw for `tklinenums`
+                self.status_bar.config(text=f"Loaded: {os.path.basename(file_path)}")
+                self.iffi_linenumbers.redraw() # Explicitly redraw after loading to be sure
+            except Exception as e:
+                messagebox.showerror("File Load Error", f"Could not read file: {e}")
+                self.status_bar.config(text="File load failed.")
+
 
     def generate_compile_run(self):
         self.status_bar.config(text="Processing...")

@@ -1,18 +1,3 @@
-func myFunc(a: int, b: int, c: int) -> int:
-    c = a + b;
-    return c;
-cnuf
+int i = 9;
 
-int fa = 7;
-LOOP:
-    fa = fa + 8;
-    if (fa > 100):
-        stop;
-    fi
-    print(2+1);
-    #komentarz
-POOL
-
-IF (fa < 200):
-    myFunc(fa, fa, fa);
-FI
+print(i);
