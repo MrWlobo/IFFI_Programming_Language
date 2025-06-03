@@ -10,6 +10,7 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_depth = 0
         self.for_loop_iterables = {}
         self.var_types = {}
+        self.data_structures_count = 0
 
         self.var_names = []
         self.error = None
@@ -218,8 +219,24 @@ class CodeGenerator(IffiVisitor):
         var_type = self.visit(ctx.basic_data_type())
         var_name = ctx.ID(0).getText()
 
+        self.output.append("{")
+
+        # Data structure created in for loops parentheses
         if ctx.data_structure():
-            iterable = self.visit(ctx.data_structure())
+            for_data_structure = self.visit(ctx.data_structure())
+            elements = for_data_structure.split(" ")
+            data_type = elements.pop(-1)
+
+            iterable = f"__temp_{data_type}_{self.data_structures_count}"
+            self.data_structures_count += 1
+
+            self.output.append(f"{var_type}_{data_type}_t {iterable}; {iterable}.next = NULL;")
+            for element in elements:
+                self.output.append(f"\n{var_type}Add(&{iterable}, {element});")
+            self.output.append(f"\n{var_type}_{data_type}_t* current_{iterable} = &{iterable};")
+            self.output.append(f"\n{var_type} current_{iterable}_data = current_{iterable}->data;")
+
+        # Data structure passed as a variable
         else:
             iterable = ctx.ID(1).getText()
 
@@ -232,7 +249,7 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
         self.output.append(f"current_{iterable} = &{iterable};")
-        self.output.append(f"current_{iterable}_data = current_{iterable}->data;")
+        self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n}}\n")
         self.for_loop_depth -= 1
         del self.for_loop_iterables[var_name]
         del self.var_types[var_name]
@@ -264,8 +281,8 @@ class CodeGenerator(IffiVisitor):
     def visitData_structure(self, ctx: IffiParser.Data_structureContext):
         if ctx.LEFT_BRACKET():
             # Lista
-            items = [self.visit(child) for child in ctx.atom()]
-            return "{" + ", ".join(items) + "}"  # np. {1, 2, 3} — styl C array initializer
+            items = [self.visit(child) for child in ctx.expr()]
+            return " ".join(items) + " list"
 
         elif ctx.LEFT_BRACE():
             # Słownik
@@ -373,8 +390,8 @@ class CodeGenerator(IffiVisitor):
         id_name = ctx.ID().getText()
         return f"{id_name}{op}"
 
-    def visitData_structure(self, ctx:IffiParser.Data_structureContext):
-        return "/* TODO: Translate data structure ot C eqvalent */"
+    # def visitData_structure(self, ctx:IffiParser.Data_structureContext):
+    #     return "/* TODO: Translate data structure ot C eqvalent */"
 
     def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
         return "/* TODO: Translate advanced data type to C equivalent */"
