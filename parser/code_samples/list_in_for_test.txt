@@ -1,0 +1,5 @@
+loop for (int i in [1, 2, 3]):
+    loop for (int j in [4, 5, 6]):
+        print(i * j + 3);
+    pool
+pool
