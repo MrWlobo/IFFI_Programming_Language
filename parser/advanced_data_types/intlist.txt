@@ -36,3 +36,16 @@ int intGet(int_list_t* list, int index) {
     }
     return current->data;
 }
+
+void intModify(int_list_t* list, int index, int value) {
+    int_list_t * current = list;
+    int current_index = 0;
+    while(current->next != NULL) {
+        if(current_index == index) {
+            break;
+        }
+        current_index++;
+        current = current->next;
+    }
+    current->data = value;
+}

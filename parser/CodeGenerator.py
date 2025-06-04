@@ -76,12 +76,22 @@ class CodeGenerator(IffiVisitor):
         return line
 
     def visitAssignment(self, ctx: IffiParser.AssignmentContext):
-        var_name = ctx.ID().getText()
-        value = self.visit(ctx.expr())
-        line = f"{var_name} = {value};"
+        # List element assignment
+        if ctx.getChildCount() == 7 and ctx.getChild(1).getText() == "[":
+            data_structure_name = ctx.ID().getText()
+            index = self.visit(ctx.expr(0))
+            value = self.visit(ctx.expr(1))
+
+            basic_data_type = self.var_types[data_structure_name].split("_")[0]
+            line = f"{basic_data_type}Modify(&{data_structure_name}, {index}, {value});"
+        else:
+            # Simple assignment
+            var_name = ctx.ID().getText()
+            value = self.visit(ctx.expr(0))
+            line = f"{var_name} = {value};"
+
         self.output.append(line)
         return line
-
 
     def visitAtom(self, ctx):
         if ctx.INT():
@@ -102,9 +112,6 @@ class CodeGenerator(IffiVisitor):
     def visitExpr(self, ctx: IffiParser.ExprContext):
         if ctx.atom():
             return self.visit(ctx.atom())
-
-        elif ctx.ID() and ctx.getChildCount() == 1:
-            return ctx.ID().getText()
 
         elif ctx.function_call_expr():
             return self.visit(ctx.function_call_expr())
@@ -145,11 +152,14 @@ class CodeGenerator(IffiVisitor):
             return self.visit(ctx.data_structure())
 
         elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
-            data_structure_name = ctx.ID().getText()
+            data_structure_name = ctx.getChild(0).getText()
             index = self.visit(ctx.expr(0))
 
             basic_data_type = self.var_types[data_structure_name].split("_")[0]
-            return f"{basic_data_type}Get(&{data_structure_name}, {index});"
+            return f"{basic_data_type}Get(&{data_structure_name}, {index})"
+
+        elif ctx.ID() and ctx.getChildCount() == 1:
+            return ctx.ID().getText()
 
         else:
             return "/* Unsupported expr */"
@@ -356,6 +366,7 @@ class CodeGenerator(IffiVisitor):
         return f"{arg_type} {arg_name}"
 
     def visitFunction_call(self, ctx:IffiParser.Function_callContext):
+        self.output.append(f"{self.visit(ctx.function_call_expr())};")
         return self.visit(ctx.function_call_expr())
 
     def visitFunction_call_expr(self, ctx:IffiParser.Function_call_exprContext):

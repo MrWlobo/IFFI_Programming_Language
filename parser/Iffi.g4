@@ -25,7 +25,7 @@ declaration
     ;
 
 assignment
-    : ID ASSIGN expr SEMICOLON
+    : ID (LEFT_BRACKET expr RIGHT_BRACKET)? ASSIGN expr SEMICOLON
     | ID ASSIGN_PLUS expr SEMICOLON
     | ID ASSIGN_MINUS expr SEMICOLON
     | ID ASSIGN_MULTIPLY expr SEMICOLON
