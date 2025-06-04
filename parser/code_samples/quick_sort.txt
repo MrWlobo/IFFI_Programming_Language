@@ -1,0 +1,34 @@
+func partition(arr: list, low: int, high: int) -> int:
+
+    int pivot = arr[high];
+
+    int i = low - 1;
+
+     loop for (int j in range(low, high)):
+        if (arr[j] < pivot):
+            i += 1;
+            swap(arr, i, j);
+        fi
+     pool
+
+    swap(arr, i + 1, high);
+    return i + 1;
+cnuf
+
+
+func swap(arr: list, i: int, j: int) -> void:
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+cnuf
+
+
+func quickSort(arr: list, low: int, high: int) -> void:
+    if (low < high):
+
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    fi
+cnuf

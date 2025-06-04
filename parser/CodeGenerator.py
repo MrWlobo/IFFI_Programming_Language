@@ -175,7 +175,11 @@ class CodeGenerator(IffiVisitor):
             if index in self.for_loop_iterables:
                 return f"current_{self.for_loop_iterables[index]}_data"
 
-            basic_data_type = self.var_types[data_structure_name].split("_")[0]
+            print(self.local_var_types)
+            if data_structure_name in self.local_var_types:
+                basic_data_type = self.local_var_types[data_structure_name].split("_")[0]
+            else:
+                basic_data_type = self.var_types[data_structure_name].split("_")[0]
             return f"{basic_data_type}Get(&{data_structure_name}, {index})"
 
         elif ctx.ID() and ctx.getChildCount() == 1:
@@ -321,10 +325,10 @@ class CodeGenerator(IffiVisitor):
             return "char"
         elif ctx.TYPE_STRING():
             return "string"
+        else:
+            return "void"
 
     def visitData_structure(self, ctx: IffiParser.Data_structureContext):
-        children = list(ctx.getChildren())
-
         if ctx.LEFT_BRACKET():
             # Lista
             items = [self.visit(child) for child in ctx.expr()]
@@ -475,7 +479,10 @@ class CodeGenerator(IffiVisitor):
 
     def visitFunction(self, ctx:IffiParser.FunctionContext):
         func_name = ctx.ID().getText()
-        return_type = self.visit(ctx.basic_data_type()) if ctx.basic_data_type() else "void"
+        if ctx.basic_data_type():
+            return_type = self.visit(ctx.basic_data_type())
+        else:
+            return_type = "void"
 
         args = []
         if ctx.argument():
@@ -488,10 +495,14 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
         self.local_var_types = {}
+
         return None
 
     def visitArgument(self, ctx:IffiParser.ArgumentContext):
-        arg_type = self.visit(ctx.basic_data_type())
+        if ctx.basic_data_type():
+            arg_type = self.visit(ctx.basic_data_type())
+        else:
+            arg_type = self.visit(ctx.advanced_data_type())
         arg_name = ctx.ID().getText()
         return f"{arg_type} {arg_name}"
 
@@ -547,7 +558,7 @@ class CodeGenerator(IffiVisitor):
     # def visitData_structure(self, ctx:IffiParser.Data_structureContext):
     #     return "/* TODO: Translate data structure ot C eqvalent */"
 
-    def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
-        return "/* TODO: Translate advanced data type to C equivalent */"
+    # def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
+    #     return "/* TODO: Translate advanced data type to C equivalent */"
 
 

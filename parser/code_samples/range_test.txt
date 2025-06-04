@@ -1,9 +1,8 @@
 int a = 5;
-int b = 9;
+int b = 19;
 
 list[int] xd = range(a, b);
 
-loop for (int i in xd):
-    int x = xd[i];
-    print(x);
+loop for (int i in range(8, b)):
+    print(i);
 pool
