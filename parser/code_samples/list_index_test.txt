@@ -6,3 +6,8 @@ lista[2] = lista[3];
 int y = lista[2];
 print(x);
 print(y);
+
+loop for (int element in lista):
+    print(element);
+    print(" ");
+pool
