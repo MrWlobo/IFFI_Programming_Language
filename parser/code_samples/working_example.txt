@@ -1,5 +1,5 @@
-FUNC myFunc(a: int, b: int, c: int) -> int:
-    c = a + b;
+FUNC myFunc(a: int, b: int) -> int:
+    int c = a + b;
     return c;
 CNUF
 
@@ -21,3 +21,5 @@ LOOP FOR (int i IN lista):
         print(j+i);
     POOL
 POOL
+
+print(myFunc(fa, fa));

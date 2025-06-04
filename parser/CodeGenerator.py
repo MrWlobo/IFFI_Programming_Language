@@ -10,6 +10,7 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_depth = 0
         self.for_loop_iterables = {}
         self.var_types = {}
+        self.function_return_types = {}
         self.local_var_types = {}
         self.data_structures_count = 0
 
@@ -531,6 +532,7 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
         self.local_var_types = {}
+        self.function_return_types[func_name] = return_type
 
         return None
 
