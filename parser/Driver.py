@@ -23,7 +23,7 @@ def main(argv):
     parser = IffiParser(stream)
     tree = parser.start_()
     # print(tree.toStringTree(recog=parser))
-    # pretty_print_tree(tree)
+    pretty_print_tree(tree)
     # print(Trees.toStringTree(tree, None, parser))
 
     generator = CodeGenerator()

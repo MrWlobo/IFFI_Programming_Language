@@ -6,6 +6,8 @@ https://phoenixnap.com/kb/install-gcc-windows - instrukcja do konfiuguracji gcc
 funkcje trzeba wyjąć przed main
 
 obsluga bledow
+dodawanie stringow
+błąd z uzyciem niezadeklarownej zmiennej
 
 naprawić ctrl + Z
 kolorwanie kodu w gui

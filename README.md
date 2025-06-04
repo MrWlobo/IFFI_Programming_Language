@@ -137,6 +137,39 @@ Kompilator języka IFFI do C
 
 ---
 
+---
+
+## Instrukcja użycia
+
+### 1. Wymagania
+* Pyton 3.10+
+* pip
+* gcc (https://phoenixnap.com/kb/install-gcc-windows)
+
+### 2. Przygotowanie i instalacja
+Aby uruchomić projekt lokalnie należy sklonować repozytorium:
+```bash
+git clone https://github.com/MrWlobo/IFFI_Programming_Language.git
+cd parser
+pip install -r requirements.txt
+```
+
+### 3. Wygenerowanie parsera z gramatyki:
+Wykonać tylko, jeśli nie ma folderu `antlr_output/` lub dokonano zmian w gramatyce.
+```bash
+antlr -Dlanguage=Python3 Iffi.g4 -o antlr_output -visitor
+```
+
+### 4. Uruchomienie GUI
+
+```bash
+py gui_app.py
+```
+
+
+---
+
+
 ## Gramatyka
 
 [Gramatyka](./parser/Iffi.g4)
