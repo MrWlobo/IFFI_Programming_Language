@@ -311,7 +311,125 @@ class CodeGenerator(IffiVisitor):
 
     def visitPrint_call(self, ctx):
         expr_value = self.visit(ctx.expr())
-        expr_list = expr_value.split(" ")
+        if self.error:
+            return None
+
+        var_type = None
+        # Case 1: Expression is a simple atom (literal or variable ID)
+        if ctx.expr().atom():
+            atom_ctx = ctx.expr().atom()
+            if atom_ctx.INT():
+                var_type = "int"
+            elif atom_ctx.FLOAT():
+                var_type = "float"
+            elif atom_ctx.BOOL():
+                var_type = "bool"
+            elif atom_ctx.CHAR():
+                var_type = "char"
+            elif atom_ctx.STRING():
+                var_type = "string"
+            elif atom_ctx.ID():
+                var_name = atom_ctx.ID().getText()
+                if var_name in self.var_types:
+                    var_type = self.var_types[var_name]
+                else:
+                    self.error = (f"Undeclared variable '{var_name}' used in print statement.",
+                                  atom_ctx.ID().symbol.line)
+                    return None
+
+        # Case 2: Expression is a variable access (e.g., array[index])
+        elif ctx.expr().ID() and ctx.expr().LEFT_BRACKET():
+            data_structure_name = ctx.expr().ID().getText()
+            if data_structure_name in self.var_types:
+                c_adt_type = self.var_types[data_structure_name]
+                var_type = c_adt_type.split('_')[0]
+            else:
+                self.error = (f"Data structure '{data_structure_name}' not declared for print.",
+                              ctx.expr().ID().symbol.line)
+                return None
+
+        # Case 3: Expression is a function call
+        elif ctx.expr().function_call_expr():
+            func_name = ctx.expr().function_call_expr().ID().getText()
+
+            # To get the return type, you'd need a symbol table that stores function signatures.
+            # For now, we'll make a basic assumption or default.
+            # Check if function return type is stored
+            if func_name in self.function_return_types:
+                var_type = self.function_return_types[func_name]
+            else:
+                # Default to int for simplicity if function type is unknown
+                # In a real compiler, this would be a semantic error or require type inference.
+                self.output.append(
+                    f"/* Warning: Could not determine return type of function '{func_name}' for print. Defaulting to int. */")
+                var_type = "int"
+
+                # Case 4: Expression is a binary operation (e.g., a + b)
+        elif (ctx.expr().PLUS() or ctx.expr().MINUS() or ctx.expr().MULTIPLY() or
+              ctx.expr().DIVIDE() or ctx.expr().FLOOR_DIVIDE() or ctx.expr().MODULO() or
+              ctx.expr().POWER()):
+            # This is a very basic heuristic. A proper type system would be needed
+            # to determine the result type of 'expr OP expr' based on operand types.
+            # For simplicity, if it involves floats, assume float; otherwise int.
+            # This requires knowing the *Iffi types* of the operands.
+            # For now, let's assume the result of any binary op is int unless a float is explicitly involved.
+            # This is hard without a full type system. Let's just default to int for now for binary ops.
+            # A more robust approach would be to recursively determine operand types.
+            # For this simplified version, we'll assume integer arithmetic unless a float is explicitly involved.
+            # If either operand is float, the result is float. Otherwise, it's int.
+            # This check is complex without a full type system.
+            # For now, we'll default to int for simplicity.
+            var_type = "int"  # Simplistic default for binary operations
+
+            # Case 5: Parenthesized expression
+        elif ctx.expr().LEFT_PAREN():
+            # The type of (expr) is the type of expr. Recursively determine.
+            # This is hard without a full type system. Default to int.
+            var_type = "int"  # Simplistic default for parenthesized expressions
+
+            # Case 6: Data structure literal (e.g., {1,2,3})
+        elif ctx.expr().data_structure():
+            # Printing a whole data structure is complex in C (requires custom print functions)
+            # We already have logic for this that outputs a comment.
+            # Let's ensure it's handled properly.
+            # The visit(ctx.expr().data_structure()) already generates a comment.
+            self.output.append(
+                f"// Cannot directly printf a data structure literal. Use a custom print function if available.")
+            return None  # Don't generate printf for this.
+
+            # Case 7: Increment/Decrement (result is the value of the variable)
+        elif ctx.expr().prefix_increment_decrement() or ctx.expr().postfix_increment_decrement():
+            # The type is the type of the ID being incremented/decremented
+            id_name = ctx.expr().ID().getText()  # Assuming ID is directly accessible here
+            if id_name in self.var_types:
+                var_type = self.var_types[id_name]
+            else:
+                self.error = (f"Undeclared variable '{id_name}' used in print statement (increment/decrement).",
+                              ctx.expr().ID().symbol.line)
+                return None
+
+            # Case 8: 'in' operator (returns boolean)
+        elif ctx.expr().T_IN():
+            var_type = "bool"
+
+            # Fallback for complex or unhandled expressions
+        if var_type is None:
+            self.output.append(
+                f"/* Warning: Could not determine type for print expression: {ctx.expr().getText()}. Defaulting to string. */")
+            ffi_type = "string"  # Fallback type
+
+            # Map Iffi type to C printf format specifier
+        output_types = {"int": "d", "float": "f", "bool": "d", "char": "c", "string": "s"}
+        format_specifier = output_types.get(var_type, "s")  # Default to 's' if type not found
+
+        # Generate the printf call
+        # The for_loop_depth and current_iterable_data logic is removed.
+        # Loop variables (e.g., 'item' in 'for int item in my_array') are now
+        # regular variables in scope due to `TypeGet` assignment, so they are handled
+        # by the general `ffi_type` deduction.
+        line = f"printf(\"%{format_specifier}\\n\", {expr_value});"
+        self.output.append(line)
+        return None
 
         # Determining the types of the variables in the expression
         output_types = {"int": "d", "float": "f", "string": "s"}
