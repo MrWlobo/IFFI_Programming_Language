@@ -1,3 +1,42 @@
-int i = 9;
+# Example 1: Basic Arithmetic and Conditional Logic
 
-print(i);
+int num1 = 10;
+int num2 = 5;
+
+print("--- Basic Arithmetic ---");
+
+int sum = num1 + num2;
+print("Sum is: ");
+print(sum);
+
+int difference = num1 - num2;
+print("Difference is: ");
+print(difference);
+
+int product = num1 * num2;
+print("Product is: ");
+print(product);
+
+float quotient = num1 / num2; # Note: integer division if both are int, float division if one is float
+print("Quotient is: ");
+print(quotient);
+
+int remainder = num1 % num2;
+print("Remainder is: ");
+print(remainder);
+
+print("--- Conditional Logic ---");
+
+int test_val = 15;
+
+if (test_val > 20): # Parentheses around the condition
+    print("Test value is greater than 20.");
+elif (test_val == 15): # Parentheses around the condition
+    print("Test value is exactly 15.");
+else:
+    print("Test value is less than 15.");
+fi
+
+bool is_positive = num1 > 0;
+print("Is num1 positive? ");
+print(is_positive);

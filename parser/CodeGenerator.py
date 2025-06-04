@@ -13,7 +13,6 @@ class CodeGenerator(IffiVisitor):
         self.local_var_types = {}
         self.data_structures_count = 0
 
-        self.var_names = []
         self.error = None
 
     def addDataStructureHandling(self, var_type):
@@ -48,7 +47,7 @@ class CodeGenerator(IffiVisitor):
         var_type = ctx.basic_data_type().getText()
         var_name = ctx.ID().getText()
 
-        if var_name in self.var_names:
+        if var_name in self.var_types.keys():
             self.error = (f"Cannot declare variable '{var_name}' that already exists.", ctx.ID().symbol.line)
 
         if ctx.expr():
@@ -74,7 +73,6 @@ class CodeGenerator(IffiVisitor):
                     line += f"\nchar* current_{var_name}_data = current_{var_name}->data;\n"
 
         self.output.append(line)
-        self.var_names.append(var_name)
         return line
 
     def visitAssignment(self, ctx: IffiParser.AssignmentContext):
@@ -227,6 +225,7 @@ class CodeGenerator(IffiVisitor):
             for_data_structure = self.visit(ctx.data_structure())
             elements = for_data_structure.split(" ")
             data_type = elements.pop(-1)
+            self.addDataStructureHandling(var_type)
 
             iterable = f"__temp_{data_type}_{self.data_structures_count}"
             self.data_structures_count += 1
