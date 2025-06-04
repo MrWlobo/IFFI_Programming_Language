@@ -64,13 +64,24 @@ class CodeGenerator(IffiVisitor):
             line += f"{var_name}.next = NULL;"
             self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
-                for expr in ctx.data_structure().expr():
-                    line += f"\n{var_type}Add(&{var_name}, {self.visit(expr)});"
-                line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
-                if var_type != "string":
+
+                data = self.visit(ctx.data_structure())
+                items = data.split()
+                if items and items[-1] == "range":
+                    items = items[:-1]
+                    line += f"\n{var_type}Range(&{var_name}, {items[0]}, {items[1]});"
+                    line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
                     line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"
                 else:
-                    line += f"\nchar* current_{var_name}_data = current_{var_name}->data;\n"
+                    items = items[:-1]
+                    for item in items:
+                        line += f"\n{var_type}Add(&{var_name}, {item});"
+
+                    line += f"\n{advanced_dt}* current_{var_name} = &{var_name};"
+                    if var_type != "string":
+                        line += f"\n{var_type} current_{var_name}_data = current_{var_name}->data;\n"
+                    else:
+                        line += f"\nchar* current_{var_name}_data = current_{var_name}->data;\n"
 
         self.output.append(line)
         return line
@@ -289,6 +300,8 @@ class CodeGenerator(IffiVisitor):
             return "string"
 
     def visitData_structure(self, ctx: IffiParser.Data_structureContext):
+        children = list(ctx.getChildren())
+
         if ctx.LEFT_BRACKET():
             # Lista
             items = [self.visit(child) for child in ctx.expr()]
@@ -300,6 +313,12 @@ class CodeGenerator(IffiVisitor):
             values = ctx.atom()[1::2]
             pairs = [f"{self.visit(k)}: {self.visit(v)}" for k, v in zip(keys, values)]
             return "/* map not directly supported in C: " + ", ".join(pairs) + " */"
+
+        if ctx.RANGE():
+            start_val = self.visit(ctx.expr(0))
+            end_val = self.visit(ctx.expr(1))
+            items = [start_val, end_val, "range"]
+            return " ".join(items)
 
         elif ctx.LEFT_PAREN():
             # Krotka

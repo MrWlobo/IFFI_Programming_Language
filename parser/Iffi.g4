@@ -123,6 +123,7 @@ data_structure
     : LEFT_BRACKET (expr (COMMA expr)*)? RIGHT_BRACKET
     | LEFT_BRACE (expr COLON expr (COMMA expr COLON expr)*)? RIGHT_BRACE
     | LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN
+    | RANGE LEFT_PAREN expr COMMA expr RIGHT_PAREN
     ;
 
 // Keywords
@@ -156,6 +157,9 @@ TYPE_ARRAY: 'array' | 'ARRAY';
 TYPE_LIST: 'list' | 'LIST';
 TYPE_MAP: 'map' | 'MAP';
 TYPE_TUPLE: 'tuple' | 'TUPLE';
+
+// Range
+RANGE: 'range' | 'RANGE';
 
 // Void
 VOID: 'void' | 'VOID';

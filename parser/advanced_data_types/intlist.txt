@@ -49,3 +49,13 @@ void intModify(int_list_t* list, int index, int value) {
     }
     current->data = value;
 }
+
+void intRange(int_list_t* list, int start, int end) {
+    int_list_t * current = list;
+    int current_index = start;
+    while(current_index < end) {
+        intAdd(current, current_index);
+        current_index++;
+        current = current->next;
+    }
+}
