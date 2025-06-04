@@ -52,8 +52,6 @@ class CodeGenerator(IffiVisitor):
 
         if ctx.expr():
             value = self.visit(ctx.expr())
-            print(value)
-            print("ELO")
             if var_type != "string":
                 line = f"{var_type} {var_name} = {value};\n"
             else:
@@ -70,6 +68,7 @@ class CodeGenerator(IffiVisitor):
             line += f"{var_name}.next = NULL;"
             self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
+
                 data = self.visit(ctx.data_structure())
                 items = data.split()
                 if items and items[-1] == "range":
@@ -178,9 +177,7 @@ class CodeGenerator(IffiVisitor):
             return self.visit(ctx.data_structure())
 
         elif ctx.ID() and ctx.LEFT_BRACKET() and ctx.RIGHT_BRACKET():
-            print(ctx.ID(0))
             data_structure_name = ctx.ID(0).getText()
-            print(data_structure_name)
             index = self.visit(ctx.expr(0))
             if index in self.for_loop_iterables:
                 return f"current_{self.for_loop_iterables[index]}_data"
@@ -304,7 +301,6 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_iterables[var_name] = iterable
 
         self.output.append(f"for (int {var_name}_idx_temp = 0; {var_name}_idx_temp < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}_idx_temp++) {{")
-        # var_type = var_type if var_type != "string" else "char*"
         self.var_types[var_name] = var_type if var_type != "string" else "char*"
         self.output.append(f"{var_type if var_type != "string" else "char*"} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
