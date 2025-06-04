@@ -4,9 +4,7 @@ instrukcje uzycia trzeba, czli ze trzeba pobrac gcc, antlr,
 https://phoenixnap.com/kb/install-gcc-windows - instrukcja do konfiuguracji gcc
 
 obsluga bledow
-printowanie stringow, w ogole printowanie czegos co nie jest nazwa zmiennej
 logical expression powinno się moc dać normalnie jako wartosc zmiennej
-wywala błąd jesli ostatnia instrukcja jest komentarz
 
 naprawić ctrl + Z
 kolorwanie kodu w gui

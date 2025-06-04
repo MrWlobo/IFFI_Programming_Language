@@ -263,8 +263,9 @@ class CodeGenerator(IffiVisitor):
 
         self.for_loop_iterables[var_name] = iterable
 
-        self.output.append(f"for (int {var_name} = 0; {var_name} < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}++) {{")
+        self.output.append(f"for (int {var_name}_idx_temp = 0; {var_name}_idx_temp < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}_idx_temp++) {{")
         self.var_types[var_name] = var_type if var_type != "char*" else "string"
+        self.output.append(f"{var_type} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
@@ -445,40 +446,10 @@ class CodeGenerator(IffiVisitor):
         # The for_loop_depth and current_iterable_data logic is removed.
         # Loop variables (e.g., 'item' in 'for int item in my_array') are now
         # regular variables in scope due to `TypeGet` assignment, so they are handled
-        # by the general `ffi_type` deduction.
+        # by the general `var_type` deduction.
         line = f"printf(\"%{format_specifier}\\n\", {expr_value});"
         self.output.append(line)
         return None
-
-        # Determining the types of the variables in the expression
-        output_types = {"int": "d", "float": "f", "string": "s"}
-        output_type = ""
-
-        if len(self.local_var_types) > 0:
-            types = self.local_var_types
-        else:
-            types = self.var_types
-
-        if all([types[expr] == types[expr_list[0]] for expr in expr_list if expr in types]):
-            output_type = output_types[types[expr_list[0]]]
-        else:
-            print("Błąd")
-
-        # Printing inside a loop
-        if self.for_loop_depth > 0:
-            line = f"printf(\"%{output_type}\\n\", "
-            for expr in expr_list:
-                # Handling the printing of iterators
-                if expr in self.for_loop_iterables:
-                    line += f"current_{self.for_loop_iterables[expr]}_data"
-                else:
-                    line += expr
-            line += ");"
-        # Printing outside a loop
-        else:
-            line = f"printf(\"%{output_type}\\n\", {expr_value});"
-        self.output.append(line)
-        return line
 
     def visitFunction(self, ctx:IffiParser.FunctionContext):
         func_name = ctx.ID().getText()
