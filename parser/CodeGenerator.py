@@ -52,6 +52,8 @@ class CodeGenerator(IffiVisitor):
 
         if ctx.expr():
             value = self.visit(ctx.expr())
+            print(value)
+            print("ELO")
             if var_type != "string":
                 line = f"{var_type} {var_name} = {value};\n"
             else:
@@ -68,7 +70,6 @@ class CodeGenerator(IffiVisitor):
             line += f"{var_name}.next = NULL;"
             self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
-
                 data = self.visit(ctx.data_structure())
                 items = data.split()
                 if items and items[-1] == "range":
@@ -137,7 +138,10 @@ class CodeGenerator(IffiVisitor):
         elif ctx.postfix_increment_decrement():
             return self.visit(ctx.postfix_increment_decrement())
 
-        elif ctx.getChildCount() == 3:
+        elif ctx.LEFT_PAREN() and ctx.RIGHT_PAREN() and ctx.expr(0):
+            return f"({self.visit(ctx.expr(0))})"
+
+        elif ctx.expr(0) and ctx.expr(1):
             left = self.visit(ctx.expr(0))
             if left in self.for_loop_iterables:
                 left = f"current_{self.for_loop_iterables[left]}_data"
@@ -173,8 +177,10 @@ class CodeGenerator(IffiVisitor):
         elif ctx.data_structure():
             return self.visit(ctx.data_structure())
 
-        elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
-            data_structure_name = ctx.getChild(0).getText()
+        elif ctx.ID() and ctx.LEFT_BRACKET() and ctx.RIGHT_BRACKET():
+            print(ctx.ID(0))
+            data_structure_name = ctx.ID(0).getText()
+            print(data_structure_name)
             index = self.visit(ctx.expr(0))
             if index in self.for_loop_iterables:
                 return f"current_{self.for_loop_iterables[index]}_data"
@@ -182,8 +188,12 @@ class CodeGenerator(IffiVisitor):
             print(self.local_var_types)
             if data_structure_name in self.local_var_types:
                 basic_data_type = self.local_var_types[data_structure_name].split("_")[0]
-            else:
+            elif data_structure_name in self.var_types:
                 basic_data_type = self.var_types[data_structure_name].split("_")[0]
+            else:
+                self.error = (f"Cannot determine type of data structure '{data_structure_name}'", ctx.ID().symbol.line)
+                return None
+
             return f"{basic_data_type}Get(&{data_structure_name}, {index})"
 
         elif ctx.ID() and ctx.getChildCount() == 1:
@@ -294,8 +304,9 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_iterables[var_name] = iterable
 
         self.output.append(f"for (int {var_name}_idx_temp = 0; {var_name}_idx_temp < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}_idx_temp++) {{")
-        self.var_types[var_name] = var_type if var_type != "char*" else "string"
-        self.output.append(f"{var_type} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
+        # var_type = var_type if var_type != "string" else "char*"
+        self.var_types[var_name] = var_type if var_type != "string" else "char*"
+        self.output.append(f"{var_type if var_type != "string" else "char*"} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
         self.visit(ctx.block())
@@ -359,125 +370,150 @@ class CodeGenerator(IffiVisitor):
         else:
             return "/* unknown data structure */"
 
-    def visitPrint_call(self, ctx):
-        expr_value = self.visit(ctx.expr())
-        if self.error:
-            return None
+    def _get_expression_ffi_type(self, expr_ctx):
+        if self.error: return None
 
-        var_type = None
-        # Case 1: Expression is a simple atom (literal or variable ID)
-        if ctx.expr().atom():
-            atom_ctx = ctx.expr().atom()
+        if expr_ctx.atom():
+            atom_ctx = expr_ctx.atom()
             if atom_ctx.INT():
-                var_type = "int"
+                return "int"
             elif atom_ctx.FLOAT():
-                var_type = "float"
+                return "float"
             elif atom_ctx.BOOL():
-                var_type = "bool"
+                return "bool"
             elif atom_ctx.CHAR():
-                var_type = "char"
+                return "char"
             elif atom_ctx.STRING():
-                var_type = "string"
+                return "string"
             elif atom_ctx.ID():
                 var_name = atom_ctx.ID().getText()
                 if var_name in self.var_types:
-                    var_type = self.var_types[var_name]
+                    return self.var_types[var_name]
                 else:
-                    self.error = (f"Undeclared variable '{var_name}' used in print statement.",
-                                  atom_ctx.ID().symbol.line)
+                    # This case should ideally be caught by visitAtom's undeclared variable check
+                    # self.error = (f"Undeclared variable '{var_name}' used in expression for type deduction.",
+                    #               atom_ctx.ID().symbol.line)
                     return None
 
-        # Case 2: Expression is a variable access (e.g., array[index])
-        elif ctx.expr().ID() and ctx.expr().LEFT_BRACKET():
-            data_structure_name = ctx.expr().ID().getText()
+        elif expr_ctx.ID() and expr_ctx.LEFT_BRACKET():  # Array/List/Map access
+            data_structure_name = expr_ctx.ID().getText()
             if data_structure_name in self.var_types:
                 c_adt_type = self.var_types[data_structure_name]
-                var_type = c_adt_type.split('_')[0]
+                return c_adt_type.split('_')[0]  # e.g., 'int' from 'int_list_t'
             else:
-                self.error = (f"Data structure '{data_structure_name}' not declared for print.",
-                              ctx.expr().ID().symbol.line)
+                self.error = (
+                    f"Data structure '{data_structure_name}' not declared for type deduction.",
+                    expr_ctx.ID().symbol.line)
                 return None
 
-        # Case 3: Expression is a function call
-        elif ctx.expr().function_call_expr():
-            func_name = ctx.expr().function_call_expr().ID().getText()
-
-            # To get the return type, you'd need a symbol table that stores function signatures.
-            # For now, we'll make a basic assumption or default.
-            # Check if function return type is stored
+        elif expr_ctx.function_call_expr():
+            func_name = expr_ctx.function_call_expr().ID().getText()
             if func_name in self.function_return_types:
-                var_type = self.function_return_types[func_name]
+                return self.function_return_types[func_name]
             else:
-                # Default to int for simplicity if function type is unknown
-                # In a real compiler, this would be a semantic error or require type inference.
-                self.output.append(
-                    f"/* Warning: Could not determine return type of function '{func_name}' for print. Defaulting to int. */")
-                var_type = "int"
+                # Warning or error: function return type unknown. Default to int.
+                # In a real compiler, this would be a semantic error.
+                return "int"  # Fallback
 
-                # Case 4: Expression is a binary operation (e.g., a + b)
-        elif (ctx.expr().PLUS() or ctx.expr().MINUS() or ctx.expr().MULTIPLY() or
-              ctx.expr().DIVIDE() or ctx.expr().FLOOR_DIVIDE() or ctx.expr().MODULO() or
-              ctx.expr().POWER()):
-            # This is a very basic heuristic. A proper type system would be needed
-            # to determine the result type of 'expr OP expr' based on operand types.
-            # For simplicity, if it involves floats, assume float; otherwise int.
-            # This requires knowing the *Iffi types* of the operands.
-            # For now, let's assume the result of any binary op is int unless a float is explicitly involved.
-            # This is hard without a full type system. Let's just default to int for now for binary ops.
-            # A more robust approach would be to recursively determine operand types.
-            # For this simplified version, we'll assume integer arithmetic unless a float is explicitly involved.
-            # If either operand is float, the result is float. Otherwise, it's int.
-            # This check is complex without a full type system.
-            # For now, we'll default to int for simplicity.
-            var_type = "int"  # Simplistic default for binary operations
+        elif expr_ctx.LEFT_PAREN() and expr_ctx.RIGHT_PAREN():  # Parenthesized expression
+            return self._get_expression_ffi_type(expr_ctx.expr(0))
 
-            # Case 5: Parenthesized expression
-        elif ctx.expr().LEFT_PAREN():
-            # The type of (expr) is the type of expr. Recursively determine.
-            # This is hard without a full type system. Default to int.
-            var_type = "int"  # Simplistic default for parenthesized expressions
+        # Binary operations: Apply type promotion rules
+        elif (expr_ctx.PLUS() or expr_ctx.MINUS() or expr_ctx.MULTIPLY() or
+              expr_ctx.DIVIDE() or expr_ctx.FLOOR_DIVIDE() or expr_ctx.MODULO() or
+              expr_ctx.POWER()):
 
-            # Case 6: Data structure literal (e.g., {1,2,3})
-        elif ctx.expr().data_structure():
-            # Printing a whole data structure is complex in C (requires custom print functions)
-            # We already have logic for this that outputs a comment.
-            # Let's ensure it's handled properly.
-            # The visit(ctx.expr().data_structure()) already generates a comment.
-            self.output.append(
-                f"// Cannot directly printf a data structure literal. Use a custom print function if available.")
-            return None  # Don't generate printf for this.
+            left_type = self._get_expression_ffi_type(expr_ctx.expr(0))
+            right_type = self._get_expression_ffi_type(expr_ctx.expr(1))
 
-            # Case 7: Increment/Decrement (result is the value of the variable)
-        elif ctx.expr().prefix_increment_decrement() or ctx.expr().postfix_increment_decrement():
-            # The type is the type of the ID being incremented/decremented
-            id_name = ctx.expr().ID().getText()  # Assuming ID is directly accessible here
-            if id_name in self.var_types:
-                var_type = self.var_types[id_name]
+            if self.error: return None  # Propagate error from recursive calls
+
+            op = expr_ctx.getChild(1).getText()
+
+            # Type promotion rules
+            if left_type == "float" or right_type == "float":
+                return "float"
+            elif left_type == "int" and right_type == "int":
+                return "int"
+            elif left_type == "bool" and right_type == "bool":
+                # Boolean operations (AND/OR are logic_expr, but if they were expr)
+                # For arithmetic ops on bools, usually promoted to int.
+                return "int"
+            elif left_type == "string" and right_type == "string" and op == '+':
+                self.error = f"Cannot add strings."
+                return "string"  # String concatenation
+            elif left_type == "char" and right_type == "char" and op == '+':
+                # Char arithmetic can result in int
+                return "int"
+            elif (left_type == "char" and right_type == "int") or \
+                    (left_type == "int" and right_type == "char"):
+                # Char + Int -> Int
+                return "int"
+            # Add more specific type compatibility rules as needed
             else:
-                self.error = (f"Undeclared variable '{id_name}' used in print statement (increment/decrement).",
-                              ctx.expr().ID().symbol.line)
+                # If types are incompatible for the operation
+                self.error = (
+                f"Type mismatch in binary operation '{op}': cannot combine '{left_type}' and '{right_type}'.",
+                expr_ctx.start.line)
                 return None
 
-            # Case 8: 'in' operator (returns boolean)
-        elif ctx.expr().T_IN():
-            var_type = "bool"
+        # Increment/Decrement: Type is the type of the ID
+        elif expr_ctx.prefix_increment_decrement() or expr_ctx.postfix_increment_decrement():
+            # The type is the type of the ID being incremented/decremented
+            # Assuming ID is directly accessible from the increment/decrement context
+            # It's better to visit the increment/decrement context to get the ID, then lookup.
+            id_node = None
+            if expr_ctx.prefix_increment_decrement():
+                id_node = expr_ctx.prefix_increment_decrement().ID()
+            elif expr_ctx.postfix_increment_decrement():
+                id_node = expr_ctx.postfix_increment_decrement().ID()
 
-            # Fallback for complex or unhandled expressions
-        if var_type is None:
+            if id_node:
+                id_name = id_node.getText()
+                if id_name in self.var_types:
+                    return self.var_types[id_name]
+                else:
+                    self.error = (
+                        f"Undeclared variable '{id_name}' used in increment/decrement expression for type deduction.",
+                        id_node.symbol.line)
+                    return None
+            return None  # Should not happen if grammar is followed
+
+        # 'in' operator: Always returns boolean
+        elif expr_ctx.T_IN():
+            return "bool"
+
+        # Data structure literal (e.g., {1,2,3})
+        elif expr_ctx.data_structure():
+            # If a data structure literal is used directly as an expression (e.g., print({1,2,3}))
+            # its type is the ADT type. But printf can't handle it directly.
+            # We'll return a placeholder type and let visitPrint_call handle the warning.
+            return "data_structure_literal"  # Special internal type
+
+        return None  # Type could not be determined
+
+    def visitPrint_call(self, ctx):
+        expr_c_code = self.visit(ctx.expr())
+        if self.error: return None
+
+        ffi_type = self._get_expression_ffi_type(ctx.expr())
+        if self.error: return None
+
+        # Handle special case for data structure literals
+        if ffi_type == "data_structure_literal":
+            self.output.append(
+                f"Cannot directly printf a data structure literal. Use a custom print function if available.")
+            return None
+
+        if ffi_type is None:
             self.output.append(
                 f"/* Warning: Could not determine type for print expression: {ctx.expr().getText()}. Defaulting to string. */")
             ffi_type = "string"  # Fallback type
 
-            # Map Iffi type to C printf format specifier
         output_types = {"int": "d", "float": "f", "bool": "d", "char": "c", "string": "s"}
-        format_specifier = output_types.get(var_type, "s")  # Default to 's' if type not found
+        format_specifier = output_types.get(ffi_type, "s")
 
-        # Generate the printf call
-        # The for_loop_depth and current_iterable_data logic is removed.
-        # Loop variables (e.g., 'item' in 'for int item in my_array') are now
-        # regular variables in scope due to `TypeGet` assignment, so they are handled
-        # by the general `var_type` deduction.
-        line = f"printf(\"%{format_specifier}\\n\", {expr_value});"
+        line = f"printf(\"%{format_specifier}\\n\", {expr_c_code});"
         self.output.append(line)
         return None
 
@@ -505,6 +541,8 @@ class CodeGenerator(IffiVisitor):
     def visitArgument(self, ctx:IffiParser.ArgumentContext):
         if ctx.basic_data_type():
             arg_type = self.visit(ctx.basic_data_type())
+            if arg_type == "string":
+                arg_type = "char*"
         else:
             arg_type = self.visit(ctx.advanced_data_type())
         arg_name = ctx.ID().getText()
@@ -563,7 +601,9 @@ class CodeGenerator(IffiVisitor):
     # def visitData_structure(self, ctx:IffiParser.Data_structureContext):
     #     return "/* TODO: Translate data structure ot C eqvalent */"
 
-    # def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
-    #     return "/* TODO: Translate advanced data type to C equivalent */"
+    def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
+        print(ctx.getChild(0))
+        return ctx.getChild(0)
+
 
 
