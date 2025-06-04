@@ -43,7 +43,7 @@ class CodeGenerator(IffiVisitor):
     def visitStatement(self, ctx):
         return self.visit(ctx.getChild(0))
 
-    def visitDeclaration(self, ctx:IffiParser.DeclarationContext):
+    def visitDeclaration(self, ctx: IffiParser.DeclarationContext):
         var_type = ctx.basic_data_type().getText()
         var_name = ctx.ID().getText()
 
@@ -55,12 +55,16 @@ class CodeGenerator(IffiVisitor):
             if var_type != "string":
                 line = f"{var_type} {var_name} = {value};\n"
             else:
-                line = f"char* {var_name} = {value}\n"
+                line = f"char* {var_name} = {value};\n"
+            self.var_types[var_name] = var_type
+        elif ctx.logic_expr():
+            value = self.visit(ctx.logic_expr())
+            line = f"{var_type} {var_name} = {value};\n"
             self.var_types[var_name] = var_type
         else:
             self.addDataStructureHandling(var_type)
             advanced_dt = f"{var_type}_{ctx.advanced_data_type().getText().lower()}_t"
-            line = f"{advanced_dt} {var_name};"
+            line = f"{advanced_dt} {var_name};\n"
             line += f"{var_name}.next = NULL;"
             self.var_types[var_name] = advanced_dt
             if ctx.data_structure():
@@ -507,11 +511,12 @@ class CodeGenerator(IffiVisitor):
                 args.append(self.visit(expr_ctx))
         args_str = ", ".join(args)
         return f"{func_name}({args_str})"
-        #self.output.append()
-        #return None
 
     def visitIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
-        return self.visitChildren(ctx)
+        if ctx.prefix_increment_decrement():
+            self.output.append(self.visit(ctx.prefix_increment_decrement()) + ";")
+        elif ctx.postfix_increment_decrement():
+            self.output.append(self.visit(ctx.postfix_increment_decrement()) + ";")
 
     def visitStop_statement(self, ctx:IffiParser.Stop_statementContext):
         self.output.append("break;")
