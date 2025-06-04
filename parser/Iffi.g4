@@ -81,7 +81,7 @@ stop_statement : T_STOP SEMICOLON ;
 
 skip_statement : T_SKIP SEMICOLON ;
 
-return_statement : T_RETURN logic_expr SEMICOLON ;
+return_statement : T_RETURN (expr | logic_expr) SEMICOLON ;
 
 block : ( statement )* ;
 

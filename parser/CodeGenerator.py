@@ -10,6 +10,7 @@ class CodeGenerator(IffiVisitor):
         self.for_loop_depth = 0
         self.for_loop_iterables = {}
         self.var_types = {}
+        self.local_var_types = {}
         self.data_structures_count = 0
 
         self.var_names = []
@@ -306,8 +307,14 @@ class CodeGenerator(IffiVisitor):
         # Determining the types of the variables in the expression
         output_types = {"int": "d", "float": "f", "string": "s"}
         output_type = ""
-        if all([self.var_types[expr] == self.var_types[expr_list[0]] for expr in expr_list if expr in self.var_types]):
-            output_type = output_types[self.var_types[expr_list[0]]]
+
+        if len(self.local_var_types) > 0:
+            types = self.local_var_types
+        else:
+            types = self.var_types
+
+        if all([types[expr] == types[expr_list[0]] for expr in expr_list if expr in types]):
+            output_type = output_types[types[expr_list[0]]]
         else:
             print("Błąd")
 
@@ -335,11 +342,13 @@ class CodeGenerator(IffiVisitor):
         if ctx.argument():
             for arg_ctx in ctx.argument():
                 args.append(self.visit(arg_ctx))
+                self.local_var_types[self.visit(arg_ctx).split(" ")[1]] = self.visit(arg_ctx).split(" ")[0]
         args_str = ", ".join(args)
 
         self.output.append(f"{return_type} {func_name}({args_str}) {{")
         self.visit(ctx.block())
         self.output.append("}")
+        self.local_var_types = {}
         return None
 
     def visitArgument(self, ctx:IffiParser.ArgumentContext):
@@ -357,8 +366,9 @@ class CodeGenerator(IffiVisitor):
             for expr_ctx in ctx.expr():
                 args.append(self.visit(expr_ctx))
         args_str = ", ".join(args)
-        self.output.append(f"{func_name}({args_str});")
-        return None
+        return f"{func_name}({args_str})"
+        #self.output.append()
+        #return None
 
     def visitIncrement_decrement(self, ctx:IffiParser.Increment_decrementContext):
         return self.visitChildren(ctx)
@@ -374,6 +384,10 @@ class CodeGenerator(IffiVisitor):
     def visitReturn_statement(self, ctx:IffiParser.Return_statementContext):
         if ctx.logic_expr():
             value = self.visit(ctx.logic_expr())
+            self.output.append(f"return {value};")
+            return f"return {value};"
+        elif ctx.expr():
+            value = self.visit(ctx.expr())
             self.output.append(f"return {value};")
             return f"return {value};"
         else:
