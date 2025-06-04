@@ -1,0 +1,8 @@
+list[int] lista = [1, 4, 56, 543, 234, 123, 43];
+
+lista[1] = 2;
+int x = lista[1];
+lista[2] = lista[3];
+int y = lista[2];
+print(x);
+print(y);
