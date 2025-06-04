@@ -257,14 +257,25 @@ class CodeGenerator(IffiVisitor):
             for_data_structure = self.visit(ctx.data_structure())
             elements = for_data_structure.split(" ")
             data_type = elements.pop(-1)
+
+            is_range = False
+            if data_type == "range":
+                data_type = "list"
+                is_range = True
+
             self.addDataStructureHandling(var_type)
 
             iterable = f"__temp_{data_type}_{self.data_structures_count}"
             self.data_structures_count += 1
+            self.output.append(f"{var_type}_{data_type}_t {iterable};\n{iterable}.next = NULL;")
 
-            self.output.append(f"{var_type}_{data_type}_t {iterable}; {iterable}.next = NULL;")
-            for element in elements:
-                self.output.append(f"\n{var_type}Add(&{iterable}, {element});")
+            if data_type == "list" and not is_range:
+                for element in elements:
+                    self.output.append(f"\n{var_type}Add(&{iterable}, {element});")
+
+            elif data_type == "list" and is_range:
+                self.output.append(f"\n{var_type}Range(&{iterable}, {elements[0]}, {elements[1]});")
+
             self.output.append(f"\n{var_type}_{data_type}_t* current_{iterable} = &{iterable};")
             self.output.append(f"\n{var_type} current_{iterable}_data = current_{iterable}->data;")
 
