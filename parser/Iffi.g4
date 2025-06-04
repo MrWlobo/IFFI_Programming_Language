@@ -21,6 +21,7 @@ statement
 
 declaration
     : basic_data_type ID (ASSIGN expr)? SEMICOLON
+    | basic_data_type ID (ASSIGN logic_expr)? SEMICOLON
     | advanced_data_type LEFT_BRACKET basic_data_type RIGHT_BRACKET ID (ASSIGN data_structure)? SEMICOLON
     ;
 
