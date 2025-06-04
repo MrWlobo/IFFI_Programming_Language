@@ -135,7 +135,11 @@ class CodeGenerator(IffiVisitor):
 
         elif ctx.getChildCount() == 3:
             left = self.visit(ctx.expr(0))
+            if left in self.for_loop_iterables:
+                left = f"current_{self.for_loop_iterables[left]}_data"
             right = self.visit(ctx.expr(1))
+            if right in self.for_loop_iterables:
+                right = f"current_{self.for_loop_iterables[right]}_data"
             op = ctx.getChild(1).getText()
 
             if op == "**":
@@ -145,11 +149,14 @@ class CodeGenerator(IffiVisitor):
 
         elif ctx.getChildCount() == 2:
             expr = self.visit(ctx.expr(0))
+            if expr in self.for_loop_iterables:
+                expr = f"current_{self.for_loop_iterables[expr]}_data"
+
             op = ctx.getChild(1).getText()
             return f"{expr}{op}"
 
         elif ctx.LEFT_PAREN():
-            return f"({self.visit(ctx.expr(0))})"
+            return f"({self.visit(ctx.expr(0))})" if ctx.expr(0) not in self.for_loop_iterables else f"current_{self.for_loop_iterables[ctx.expr(0)]}_data"
 
         elif ctx.atom() and ctx.T_IN():
             left = self.visit(ctx.atom())
@@ -165,11 +172,15 @@ class CodeGenerator(IffiVisitor):
         elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
             data_structure_name = ctx.getChild(0).getText()
             index = self.visit(ctx.expr(0))
+            if index in self.for_loop_iterables:
+                return f"current_{self.for_loop_iterables[index]}_data"
 
             basic_data_type = self.var_types[data_structure_name].split("_")[0]
             return f"{basic_data_type}Get(&{data_structure_name}, {index})"
 
         elif ctx.ID() and ctx.getChildCount() == 1:
+            if ctx.ID().getText() in self.for_loop_iterables:
+                return f"current_{self.for_loop_iterables[ctx.ID().getText()]}_data"
             return ctx.ID().getText()
 
         else:
