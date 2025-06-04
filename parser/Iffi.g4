@@ -55,11 +55,11 @@ do_while_loop
     ;
 
 function
-    : T_FUNC ID LEFT_PAREN (argument (COMMA argument)*)? RIGHT_PAREN ARROW (basic_data_type | advanced_data_type| VOID) COLON block T_CNUF
+    : T_FUNC ID LEFT_PAREN (argument (COMMA argument)*)? RIGHT_PAREN ARROW (basic_data_type | advanced_data_type LEFT_BRACKET basic_data_type RIGHT_BRACKET| VOID) COLON block T_CNUF
     ;
 
 argument
-    : ID COLON (basic_data_type | advanced_data_type)
+    : ID COLON (basic_data_type | advanced_data_type LEFT_BRACKET basic_data_type RIGHT_BRACKET)
     ;
 
 function_call
@@ -99,6 +99,7 @@ expr
     | ID T_IN data_structure
     | ID T_IN ID
     | data_structure
+    | ID LEFT_BRACKET expr RIGHT_BRACKET
     ;
 
 logic_expr

@@ -3,6 +3,8 @@ data structures - skonczyć
 instrukcje uzycia trzeba, czli ze trzeba pobrac gcc, antlr,
 https://phoenixnap.com/kb/install-gcc-windows - instrukcja do konfiuguracji gcc
 
+funkcje trzeba wyjąć przed main
+
 obsluga bledow
 
 naprawić ctrl + Z

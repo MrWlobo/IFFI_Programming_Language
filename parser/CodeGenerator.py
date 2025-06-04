@@ -97,7 +97,11 @@ class CodeGenerator(IffiVisitor):
             index = self.visit(ctx.expr(0))
             value = self.visit(ctx.expr(1))
 
-            basic_data_type = self.var_types[data_structure_name].split("_")[0]
+            if data_structure_name in self.local_var_types:
+                basic_data_type = self.local_var_types[data_structure_name].split("_")[0]
+            else:
+                basic_data_type = self.var_types[data_structure_name].split("_")[0]
+
             line = f"{basic_data_type}Modify(&{data_structure_name}, {index}, {value});"
         else:
             # Simple assignment
@@ -176,14 +180,15 @@ class CodeGenerator(IffiVisitor):
         elif ctx.getChildCount() == 4 and ctx.getChild(1).getText() == "[":
             data_structure_name = ctx.getChild(0).getText()
             index = self.visit(ctx.expr(0))
-            if index in self.for_loop_iterables:
-                return f"current_{self.for_loop_iterables[index]}_data"
 
-            print(self.local_var_types)
             if data_structure_name in self.local_var_types:
                 basic_data_type = self.local_var_types[data_structure_name].split("_")[0]
             else:
                 basic_data_type = self.var_types[data_structure_name].split("_")[0]
+
+            if index in self.for_loop_iterables:
+                index = f"current_{self.for_loop_iterables[index]}_data"
+
             return f"{basic_data_type}Get(&{data_structure_name}, {index})"
 
         elif ctx.ID() and ctx.getChildCount() == 1:
@@ -212,6 +217,7 @@ class CodeGenerator(IffiVisitor):
             return f"({left} || {right})"
 
         if ctx.expr(1):
+            print("XD1")
             left = self.visit(ctx.expr(0))
             op = ctx.getChild(1).getText()
             right = self.visit(ctx.expr(1))
@@ -491,8 +497,12 @@ class CodeGenerator(IffiVisitor):
         args = []
         if ctx.argument():
             for arg_ctx in ctx.argument():
-                args.append(self.visit(arg_ctx))
-                self.local_var_types[self.visit(arg_ctx).split(" ")[1]] = self.visit(arg_ctx).split(" ")[0]
+                if arg_ctx.advanced_data_type():
+                    args.append(f"{self.visit(arg_ctx)}")
+                    self.local_var_types[self.visit(arg_ctx).split(" ")[1]] = self.visit(arg_ctx).split(" ")[0]
+                else:
+                    args.append(self.visit(arg_ctx))
+                    self.local_var_types[self.visit(arg_ctx).split(" ")[1]] = self.visit(arg_ctx).split(" ")[0]
         args_str = ", ".join(args)
 
         self.output.append(f"{return_type} {func_name}({args_str}) {{")
@@ -503,10 +513,10 @@ class CodeGenerator(IffiVisitor):
         return None
 
     def visitArgument(self, ctx:IffiParser.ArgumentContext):
-        if ctx.basic_data_type():
+        if ctx.basic_data_type() and not ctx.advanced_data_type():
             arg_type = self.visit(ctx.basic_data_type())
         else:
-            arg_type = self.visit(ctx.advanced_data_type())
+            arg_type = f"{self.visit(ctx.basic_data_type())}_{ctx.advanced_data_type().getText()}_t"
         arg_name = ctx.ID().getText()
         return f"{arg_type} {arg_name}"
 
