@@ -250,4 +250,4 @@ BOOL: 'true' | 'false' ;
 CHAR: '\'' ( '\\' . | ~['\\\r\n] ) '\'' ;
 STRING: '"' ( '\\' . | ~["\\\r\n] )* '"' ;
 WS: [ \t\n\r]+ -> skip ;
-LINE_COMMENT : '#' .*? '\r'? '\n' -> skip ;
+LINE_COMMENT : '#' ~[\r\n]* ('\r'? '\n' | EOF) -> skip ;
