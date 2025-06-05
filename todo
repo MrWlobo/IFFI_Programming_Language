@@ -1,13 +1,11 @@
 data structures - skonczyć
 
-instrukcje uzycia trzeba, czli ze trzeba pobrac gcc, antlr,
-https://phoenixnap.com/kb/install-gcc-windows - instrukcja do konfiuguracji gcc
-
 funkcje trzeba wyjąć przed main
 
 obsluga bledow
 dodawanie stringow
 błąd z uzyciem niezadeklarownej zmiennej
+assignment z elementem listy jest zle
 
 naprawić ctrl + Z
 kolorwanie kodu w gui

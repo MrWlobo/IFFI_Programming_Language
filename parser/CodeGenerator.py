@@ -107,8 +107,21 @@ class CodeGenerator(IffiVisitor):
         else:
             # Simple assignment
             var_name = ctx.ID().getText()
+            if var_name not in self.var_types.keys():
+                self.error = (f"Variable '{var_name}' undeclared.", ctx.ID().symbol.line)
+                return None
             value = self.visit(ctx.expr(0))
-            line = f"{var_name} = {value};"
+            line = ""
+            if ctx.ASSIGN():
+                line = f"{var_name} = {value};"
+            if ctx.ASSIGN_PLUS():
+                line = f"{var_name} = {var_name} + {value};\n"
+            elif ctx.ASSIGN_MINUS():
+                line = f"{var_name} = {var_name} - {value};\n"
+            elif ctx.ASSIGN_MULTIPLY():
+                line = f"{var_name} = {var_name} * {value};\n"
+            elif ctx.ASSIGN_DIVIDE():
+                line = f"{var_name} = {var_name} / {value};\n"
 
         self.output.append(line)
         return line
@@ -121,6 +134,9 @@ class CodeGenerator(IffiVisitor):
         elif ctx.BOOL():
             return ctx.BOOL().getText()
         elif ctx.ID():
+            #if ctx.ID().getText() not in self.var_types.keys():
+                #self.error = (f"Variable '{ctx.ID().getText()}' undeclared.", ctx.ID().symbol.line)
+                #return None
             return ctx.ID().getText()
         elif ctx.CHAR():
             return ctx.CHAR().getText()
