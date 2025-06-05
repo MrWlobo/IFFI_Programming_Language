@@ -201,7 +201,7 @@ class CodeGenerator(IffiVisitor):
             data_structure_name = ctx.ID(0).getText()
             index = self.visit(ctx.expr(0))
             if index in self.for_loop_iterables:
-                return f"current_{self.for_loop_iterables[index]}_data"
+                index = f"current_{self.for_loop_iterables[index]}_data"
 
             print(self.local_var_types)
             if data_structure_name in self.local_var_types:
@@ -281,58 +281,89 @@ class CodeGenerator(IffiVisitor):
         self.visit(ctx.block())
         self.output.append("}")
 
-    def visitFor_loop(self, ctx:IffiParser.For_loopContext):
+    def visitFor_loop(self, ctx: IffiParser.For_loopContext):
+        # Zwiększamy głębokość zagnieżdżenia pętli for
         self.for_loop_depth += 1
+
+        # Odczytujemy typ zmiennej oraz jej nazwę z drzewa składni
         var_type = self.visit(ctx.basic_data_type())
         var_name = ctx.ID(0).getText()
 
+        # Otwieramy blok pętli w C
         self.output.append("{")
 
-        # Data structure created in for loops parentheses
+        # Sprawdzamy, czy pętla zawiera strukturę danych (np. listę lub zakres)
         if ctx.data_structure():
+            # Generujemy kod inicjalizujący strukturę danych
             for_data_structure = self.visit(ctx.data_structure())
             elements = for_data_structure.split(" ")
-            data_type = elements.pop(-1)
+            data_type = elements.pop(-1)  # np. "list" lub "range"
 
             is_range = False
             if data_type == "range":
                 data_type = "list"
                 is_range = True
 
+            # Dodajemy potrzebne deklaracje/obsługę struktury danych
             self.addDataStructureHandling(var_type)
 
+            # Generujemy nazwę tymczasowej zmiennej do iteracji
             iterable = f"__temp_{data_type}_{self.data_structures_count}"
             self.data_structures_count += 1
+
+            # Inicjalizujemy pustą listę
             self.output.append(f"{var_type}_{data_type}_t {iterable};\n{iterable}.next = NULL;")
 
+            # Jeśli to zwykła lista, dodajemy każdy element
             if data_type == "list" and not is_range:
                 for element in elements:
                     self.output.append(f"\n{var_type}Add(&{iterable}, {element});")
 
+            # Jeśli to zakres (range), wywołujemy funkcję Range
             elif data_type == "list" and is_range:
                 self.output.append(f"\n{var_type}Range(&{iterable}, {elements[0]}, {elements[1]});")
 
+            # Ustawiamy wskaźnik na początek listy i odczytujemy bieżący element
             self.output.append(f"\n{var_type}_{data_type}_t* current_{iterable} = &{iterable};")
             self.output.append(f"\n{var_type} current_{iterable}_data = current_{iterable}->data;")
 
-        # Data structure passed as a variable
+        # Jeśli przekazano istniejącą zmienną jako strukturę danych
         else:
             iterable = ctx.ID(1).getText()
 
+        # Mapujemy zmienną pętli na nazwę struktury, po której iterujemy
         self.for_loop_iterables[var_name] = iterable
 
-        self.output.append(f"for (int {var_name}_idx_temp = 0; {var_name}_idx_temp < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}_idx_temp++) {{")
+        # Tworzymy pętlę for iterującą po długości struktury danych
+        self.output.append(
+            f"for (int {var_name}_idx_temp = 0; {var_name}_idx_temp < {ctx.basic_data_type().getText()}Length(&{iterable}); {var_name}_idx_temp++) {{")
+
+        # Przypisujemy typ zmiennej do słownika zmiennych
         self.var_types[var_name] = var_type if var_type != "string" else "char*"
-        self.output.append(f"{var_type if var_type != "string" else "char*"} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
+
+        # Pobieramy aktualny element z listy i przypisujemy go do zmiennej pętli
+        self.output.append(
+            f"{var_type if var_type != 'string' else 'char*'} {var_name} = {var_type}Get(&{iterable}, {var_name}_idx_temp);")
+
+        # Aktualizujemy dane bieżącego elementu i przesuwamy wskaźnik na następny element
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n")
         self.output.append(f"current_{iterable} = current_{iterable}->next;\n")
+
+        # Odwiedzamy blok wewnątrz pętli
         self.visit(ctx.block())
+
+        # Zamykanie pętli for
         self.output.append("}")
+
+        # Resetujemy wskaźnik na początek struktury danych po pętli
         self.output.append(f"current_{iterable} = &{iterable};")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n}}\n")
+
+        # Zmniejszamy głębokość pętli i czyścimy informacje o zmiennej
         self.for_loop_depth -= 1
         del self.for_loop_iterables[var_name]
         del self.var_types[var_name]
+
         return None
 
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
