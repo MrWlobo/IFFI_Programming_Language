@@ -362,7 +362,7 @@ class CodeGenerator(IffiVisitor):
         self.loop_depth -= 1
 
         # Zmniejszamy głębokość pętli i czyścimy informacje o zmiennej
-        self.for_loop_depth -= 1
+        self.loop_depth -= 1
         del self.for_loop_iterables[var_name]
         del self.var_types[var_name]
 
