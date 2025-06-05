@@ -42,86 +42,128 @@ class CustomErrorListener(ErrorListener):
 class IffiCompilerGUI:
     def __init__(self, master):
         self.master = master
+        self.theme = "light"
+
+        # --- Themes dictionary ---
+        self.themes = {
+            "dark": {
+                "bg": "#1e1e1e",
+                "fg": "#ffffff",
+                "text_bg": "#2d2d2d",
+                "text_fg": "#ffffff",
+                "status": "#121212",
+                "highlight": "#44475a",
+                "accent": "#2192FF",
+                "c_bg": "#ffffff",
+                "c_fg": "#000000"
+            },
+            "light": {
+                "bg": "#f5f5f5",
+                "fg": "#000000",
+                "text_bg": "#ffffff",
+                "text_fg": "#000000",
+                "status": "#dddddd",
+                "highlight": "#cccccc",
+                "accent": "#1976D2",
+                "c_bg": "#ffffff",
+                "c_fg": "#000000"
+            }
+        }
+
         with open('./code_samples/input2.txt', 'r', encoding='utf-8') as f:
-            content = f.read()
-            self.iffi_code = content
+            self.iffi_code = f.read()
 
-        master.title("IFFI Compiler GUI")
+        self.setup_gui()
+        self.apply_theme()
 
-        # --- Layout Configuration ---
-        master.grid_rowconfigure(0, weight=1)  # Input area
-        master.grid_rowconfigure(1, weight=0)  # Button row
-        master.grid_rowconfigure(2, weight=1)  # C Code area
-        master.grid_rowconfigure(3, weight=0)  # Output area
-        master.grid_columnconfigure(0, weight=1)
-        master.grid_columnconfigure(1, weight=1)
+    def setup_gui(self):
+        self.master.title("IFFI Compiler GUI")
 
-        # --- Iffi Code Input ---
-        # --- Iffi Code Input (Top Row, spans both columns) ---
-        self.iffi_label = tk.Label(master, text="Iffi Code:")
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_rowconfigure(1, weight=0)
+        self.master.grid_rowconfigure(2, weight=1)
+        self.master.grid_rowconfigure(3, weight=0)
+        self.master.grid_columnconfigure(0, weight=1)
+        self.master.grid_columnconfigure(1, weight=1)
+
+        self.iffi_label = tk.Label(self.master, text="Iffi Code:")
         self.iffi_label.grid(row=0, column=0, sticky="nw", padx=5, pady=2, columnspan=2)
 
-        # Create a frame for Iffi code and its line numbers
-        self.iffi_frame = tk.Frame(master)
+        self.iffi_frame = tk.Frame(self.master)
         self.iffi_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=(25, 5), columnspan=2)
 
-        self.iffi_text = scrolledtext.ScrolledText(self.iffi_frame, wrap=tk.WORD, width=60, height=20,
-                                                   font=("Consolas", 10))
-        self.iffi_text.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)  # Pack into the frame
+        self.iffi_text = scrolledtext.ScrolledText(self.iffi_frame, wrap=tk.WORD, width=60, height=20, font=("Consolas", 10))
+        self.iffi_text.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        # Initialize tklinenums for Iffi code
-        self.iffi_linenumbers = TkLineNumbers(self.iffi_frame, self.iffi_text, justify="left",
-                                                         colors=("#2192FF", "#FFFFFF"))
-        self.iffi_linenumbers.pack(side=tk.LEFT, fill=tk.Y)  # Pack into the frame
+        self.iffi_linenumbers = TkLineNumbers(self.iffi_frame, self.iffi_text, justify="left")
+        self.iffi_linenumbers.pack(side=tk.LEFT, fill=tk.Y)
 
-        # Link scrolling
-        self.iffi_text.vbar.config(command=self.iffi_linenumbers.redraw) # Link the scrollbar to redraw
-        self.iffi_linenumbers.bind_all("<MouseWheel>",
-                                       lambda event: self.iffi_text.yview_scroll(int(-1 * (event.delta / 120)),
-                                                                                 "units"))
+        self.iffi_text.vbar.config(command=self.iffi_linenumbers.redraw)
+        self.iffi_linenumbers.bind_all("<MouseWheel>", lambda event: self.iffi_text.yview_scroll(int(-1 * (event.delta / 120)), "units"))
         self.iffi_linenumbers.bind_all("<Button-4>", lambda event: self.iffi_text.yview_scroll(-1, "units"))
         self.iffi_linenumbers.bind_all("<Button-5>", lambda event: self.iffi_text.yview_scroll(1, "units"))
 
-        # --- NEW BINDINGS FOR AUTOMATIC LINE NUMBER UPDATE ---
         self.iffi_text.bind("<KeyRelease>", lambda event: self.iffi_linenumbers.redraw())
         self.iffi_text.bind("<BackSpace>", lambda event: self.iffi_linenumbers.redraw())
         self.iffi_text.bind("<Return>", lambda event: self.iffi_linenumbers.redraw())
-        self.iffi_text.bind("<<Modified>>", lambda event: self.iffi_linenumbers.redraw()) # Keep this for other operations
+        self.iffi_text.bind("<<Modified>>", lambda event: self.iffi_linenumbers.redraw())
 
-        self.iffi_text.edit_modified(False)  # Reset modified flag initially
         self.iffi_text.insert(tk.END, self.iffi_code)
 
-
-        # --- C Code Output ---
-        self.c_label = tk.Label(master, text="Generated C Code:")
+        self.c_label = tk.Label(self.master, text="Generated C Code:")
         self.c_label.grid(row=2, column=0, sticky="nw", padx=5, pady=2)
-        self.c_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=60, height=18, font=("Consolas", 10))
+
+        self.c_text = scrolledtext.ScrolledText(self.master, wrap=tk.WORD, width=60, height=18, font=("Consolas", 10))
         self.c_text.grid(row=2, column=0, sticky="nsew", padx=5, pady=(25, 5))
-        self.c_text.config(state=tk.DISABLED)  # Make read-only
+        self.c_text.config(state=tk.DISABLED)
 
-        # --- Program Output ---
-        self.output_label = tk.Label(master, text="Program Output:")
+        self.output_label = tk.Label(self.master, text="Program Output:")
         self.output_label.grid(row=2, column=1, sticky="nw", padx=5, pady=2)
-        self.output_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=60, height=18, font=("Consolas", 10))
-        self.output_text.grid(row=2, column=1, sticky="nsew", padx=5, pady=(25, 5))
-        self.output_text.config(state=tk.DISABLED)  # Make read-only
 
-        # --- Buttons ---
-        # Create a frame for the buttons to better control their layout
-        self.button_frame = tk.Frame(master)
+        self.output_text = scrolledtext.ScrolledText(self.master, wrap=tk.WORD, width=60, height=18, font=("Consolas", 10))
+        self.output_text.grid(row=2, column=1, sticky="nsew", padx=5, pady=(25, 5))
+        self.output_text.config(state=tk.DISABLED)
+
+        self.button_frame = tk.Frame(self.master)
         self.button_frame.grid(row=1, column=0, columnspan=2, pady=10)
 
-        # Changed button text and command
         self.load_file_button = tk.Button(self.button_frame, text="Load Iffi File", command=self.load_iffi_file)
         self.load_file_button.pack(side=tk.LEFT, padx=5)
 
         self.compile_run_button = tk.Button(self.button_frame, text="Generate C, Compile & Run", command=self.generate_compile_run)
         self.compile_run_button.pack(side=tk.LEFT, padx=5)
 
+        self.theme_button = tk.Button(self.button_frame, text="Toggle Theme", command=self.toggle_theme)
+        self.theme_button.pack(side=tk.LEFT, padx=5)
 
-        # --- Status Bar ---
-        self.status_bar = tk.Label(master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.status_bar = tk.Label(self.master, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_bar.grid(row=3, column=0, columnspan=2, sticky="ew")
+
+    def apply_theme(self):
+        theme = self.themes[self.theme]
+
+        self.master.configure(bg=theme["bg"])
+        self.iffi_label.config(bg=theme["bg"], fg=theme["fg"])
+        self.iffi_frame.config(bg=theme["bg"])
+        self.iffi_text.config(bg=theme["text_bg"], fg=theme["text_fg"],
+                              insertbackground=theme["fg"], selectbackground=theme["highlight"])
+        # self.iffi_linenumbers.config(bg=theme["bg"], fg=theme["accent"])
+        self.c_label.config(bg=theme["bg"], fg=theme["fg"])
+        self.output_label.config(bg=theme["bg"], fg=theme["fg"])
+        self.c_text.config(bg=theme["text_bg"], fg=theme["text_fg"],
+                           insertbackground=theme["fg"], selectbackground=theme["highlight"])
+        self.output_text.config(bg=theme["text_bg"], fg=theme["text_fg"],
+                                insertbackground=theme["fg"], selectbackground=theme["highlight"])
+        self.button_frame.config(bg=theme["bg"])
+        self.status_bar.config(bg=theme["status"], fg=theme["fg"])
+        for button in [self.load_file_button, self.compile_run_button, self.theme_button]:
+            button.config(bg=theme["highlight"], fg=theme["fg"],
+                          activebackground=theme["accent"], relief="flat", bd=0,
+                          highlightthickness=0)
+
+    def toggle_theme(self):
+        self.theme = "light" if self.theme == "dark" else "dark"
+        self.apply_theme()
 
     def update_text_area(self, text_widget, content, error=False, linenumbers_widget=None):
         text_widget.config(state=tk.NORMAL)
@@ -136,7 +178,11 @@ class IffiCompilerGUI:
         if error:
             text_widget.config(fg="#f00")
         else:
-            text_widget.config(fg="#000")
+            if self.theme == "light":
+                text_widget.config(fg="#000")
+            else:
+                text_widget.config(fg="#fff")
+
 
     def load_iffi_file(self):
         """
