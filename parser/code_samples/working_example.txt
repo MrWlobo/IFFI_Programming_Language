@@ -13,7 +13,7 @@ LOOP:
     #komentarz
 POOL
 
-LIST[int] lista = [1, 2, 3, 8, 99, 123, 90001];
+LIST[int] lista = [1, 2, 3, 8, 99, 123];
 LIST[int] lista1 = [3, 2, 1];
 
 LOOP FOR (int i IN lista):

@@ -1,4 +1,10 @@
-func partition(arr: list, low: int, high: int) -> int:
+func swap(arr: list[int], i: int, j: int) -> void:
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+cnuf
+
+func partition(arr: list[int], low: int, high: int) -> int:
 
     int pivot = arr[high];
 
@@ -16,14 +22,8 @@ func partition(arr: list, low: int, high: int) -> int:
 cnuf
 
 
-func swap(arr: list, i: int, j: int) -> void:
-    int temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-cnuf
 
-
-func quickSort(arr: list, low: int, high: int) -> void:
+func quickSort(arr: list[int], low: int, high: int) -> void:
     if (low < high):
 
         int pi = partition(arr, low, high);
@@ -32,3 +32,9 @@ func quickSort(arr: list, low: int, high: int) -> void:
         quickSort(arr, pi + 1, high);
     fi
 cnuf
+
+list[int] elo = [12, 78, 45, 32,120, 90, 450, 12, 56, 89, 34];
+quickSort(elo, 0, 11);
+loop for(int i in elo):
+    print(i);
+pool

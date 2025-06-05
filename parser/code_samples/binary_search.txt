@@ -1,18 +1,26 @@
-func binarySearch(arr: list[int], low: int, high: int, x: int):
+func binarySearch(arr: list[int], low: int, high: int, x: int) -> int:
 
     loop while(low <= high):
 
-        mid = low + (high - low) // 2;
+        int mid = low + (high - low) // 2;
 
-        if arr[mid] == x:
+        if (arr[mid] == x):
             return mid;
 
-        elif arr[mid] < x:
+        elif (arr[mid] < x):
             low = mid + 1;
 
         else:
             high = mid - 1;
 
-    return -1;
+        fi
+
     pool
+
+    return -1;
 cnuf
+
+
+list[int] elo = [12, 45, 47,120, 289];
+int index = binarySearch(elo, 0, 5, 47);
+print(index);

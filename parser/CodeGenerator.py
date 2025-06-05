@@ -7,7 +7,7 @@ class CodeGenerator(IffiVisitor):
         self.output = []
         self.int_main_index = 0
         self.list_types = []
-        self.for_loop_depth = 0
+        self.loop_depth = 0
         self.for_loop_iterables = {}
         self.var_types = {}
         self.function_return_types = {}
@@ -107,7 +107,7 @@ class CodeGenerator(IffiVisitor):
         else:
             # Simple assignment
             var_name = ctx.ID().getText()
-            if var_name not in self.var_types.keys():
+            if (var_name not in self.var_types.keys()) and (var_name not in self.local_var_types.keys()) :
                 self.error = (f"Variable '{var_name}' undeclared.", ctx.ID().symbol.line)
                 return None
             value = self.visit(ctx.expr(0))
@@ -134,9 +134,9 @@ class CodeGenerator(IffiVisitor):
         elif ctx.BOOL():
             return ctx.BOOL().getText()
         elif ctx.ID():
-            #if ctx.ID().getText() not in self.var_types.keys():
-                #self.error = (f"Variable '{ctx.ID().getText()}' undeclared.", ctx.ID().symbol.line)
-                #return None
+            if (ctx.ID().getText() not in self.var_types.keys()) and (ctx.ID().getText() not in self.local_var_types.keys()):
+                self.error = (f"Variable '{ctx.ID().getText()}' undeclared.", ctx.ID().symbol.line)
+                return None
             return ctx.ID().getText()
         elif ctx.CHAR():
             return ctx.CHAR().getText()
@@ -170,7 +170,9 @@ class CodeGenerator(IffiVisitor):
                 right = f"current_{self.for_loop_iterables[right]}_data"
             op = ctx.getChild(1).getText()
 
-            if op == "**":
+            if op == "//":
+                return f"{left} / {right}"
+            elif op == "**":
                 return f"(pow( {left} , {right} ))"
             else:
                 return f"{left} {op} {right}"
@@ -277,15 +279,14 @@ class CodeGenerator(IffiVisitor):
         return None
 
     def visitLoop(self, ctx:IffiParser.LoopContext):
+        self.loop_depth += 1
         self.output.append("while (true) {")
         self.visit(ctx.block())
         self.output.append("}")
+        self.loop_depth -= 1
 
-    def visitFor_loop(self, ctx: IffiParser.For_loopContext):
-        # Zwiększamy głębokość zagnieżdżenia pętli for
-        self.for_loop_depth += 1
-
-        # Odczytujemy typ zmiennej oraz jej nazwę z drzewa składni
+    def visitFor_loop(self, ctx:IffiParser.For_loopContext):
+        self.loop_depth += 1
         var_type = self.visit(ctx.basic_data_type())
         var_name = ctx.ID(0).getText()
 
@@ -358,6 +359,7 @@ class CodeGenerator(IffiVisitor):
         # Resetujemy wskaźnik na początek struktury danych po pętli
         self.output.append(f"current_{iterable} = &{iterable};")
         self.output.append(f"current_{iterable}_data = current_{iterable}->data;\n}}\n")
+        self.loop_depth -= 1
 
         # Zmniejszamy głębokość pętli i czyścimy informacje o zmiennej
         self.for_loop_depth -= 1
@@ -367,15 +369,19 @@ class CodeGenerator(IffiVisitor):
         return None
 
     def visitWhile_loop(self, ctx:IffiParser.While_loopContext):
+        self.loop_depth += 1
         self.output.append(f"while ({self.visit(ctx.logic_expr())}) {{")
         self.visit(ctx.block())
         self.output.append("}")
+        self.loop_depth -= 1
 
     def visitDo_while_loop(self, ctx:IffiParser.Do_while_loopContext):
+        self.loop_depth += 1
         self.output.append("do {")
         self.visit(ctx.block())
         self.output.append("}")
         self.output.append(f"while ({self.visit(ctx.logic_expr())});")
+        self.loop_depth -= 1
 
     def visitBasic_data_type(self, ctx):
         if ctx.TYPE_INT():
@@ -621,10 +627,16 @@ class CodeGenerator(IffiVisitor):
             self.output.append(self.visit(ctx.postfix_increment_decrement()) + ";")
 
     def visitStop_statement(self, ctx:IffiParser.Stop_statementContext):
+        if self.loop_depth == 0:
+            self.error = ("Cannot use stop outside a loop.", ctx.getChild(0).symbol.line)
+            return None
         self.output.append("break;")
         return "break;"
 
     def visitSkip_statement(self, ctx:IffiParser.Skip_statementContext):
+        if self.loop_depth == 0:
+            self.error = ("Cannot use skip outside a loop.", ctx.getChild(0).symbol.line)
+            return None
         self.output.append("continue;")
         return "continue;"
 

@@ -208,10 +208,10 @@ exception_type
 
 
 atom
-    : ID
+    : BOOL
+    | ID
     | INT
     | FLOAT
-    | BOOL
     | CHAR
     | STRING
     ;
@@ -251,8 +251,8 @@ ASSIGN_DIVIDE: '/=';
 INT: [-]?[0-9]+ ;
 FLOAT: [-]?([0-9]*[.])?[0-9]+ ;
 //DOUBLE: [-]?([0-9]*[.])?[0-9]+ ;
-ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 BOOL: 'true' | 'false' ;
+ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 CHAR: '\'' ( '\\' . | ~['\\\r\n] ) '\'' ;
 STRING: '"' ( '\\' . | ~["\\\r\n] )* '"' ;
 WS: [ \t\n\r]+ -> skip ;
