@@ -172,7 +172,8 @@ py gui_app.py
 ## Przykład użycia
 
 ![Widok GUI](./pics/widok.png)
-![Widok Dark GUI] (./pics/widok_dark.png)
+
+![Widok Dark GUI](./pics/widok_dark.png)
 
 ## Gramatyka
 
