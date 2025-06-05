@@ -181,4 +181,30 @@ py gui_app.py
 
 ## Przykładowy kod źródłowy w języku IFFI
 
-[language_sample](./parser/code_samples/working_example.txt)
+```iffi
+FUNC myFunc(a: int, b: int) -> int:
+    int c = a + b;
+    return c;
+CNUF
+
+int fa = 7;
+LOOP:
+    fa = fa + 8;
+    IF (fa > 100):
+        print(fa);
+        stop;
+    FI
+    #komentarz
+POOL
+
+LIST[int] lista = [1, 2, 3, 8, 99, 123];
+LIST[int] lista1 = [3, 2, 1];
+
+LOOP FOR (int i IN lista):
+    LOOP FOR (int j IN lista1):
+        print(j+i);
+    POOL
+POOL
+
+print(myFunc(fa, fa));
+```
