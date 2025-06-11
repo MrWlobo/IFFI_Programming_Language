@@ -200,7 +200,7 @@ class CodeGenerator(IffiVisitor):
             return self.visit(ctx.data_structure())
 
         elif ctx.ID() and ctx.LEFT_BRACKET() and ctx.RIGHT_BRACKET():
-            data_structure_name = ctx.ID(0).getText()
+            data_structure_name = ctx.ID().getText()
             index = self.visit(ctx.expr(0))
             if index in self.for_loop_iterables:
                 index = f"current_{self.for_loop_iterables[index]}_data"
@@ -288,7 +288,7 @@ class CodeGenerator(IffiVisitor):
     def visitFor_loop(self, ctx:IffiParser.For_loopContext):
         self.loop_depth += 1
         var_type = self.visit(ctx.basic_data_type())
-        var_name = ctx.ID(0).getText()
+        var_name = ctx.ID()[0].getText()
 
         # Otwieramy blok pętli w C
         self.output.append("{")
@@ -330,7 +330,8 @@ class CodeGenerator(IffiVisitor):
 
         # Jeśli przekazano istniejącą zmienną jako strukturę danych
         else:
-            iterable = ctx.ID(1).getText()
+            iterable = ctx.ID()[1].getText()
+            print(iterable)
 
         # Mapujemy zmienną pętli na nazwę struktury, po której iterujemy
         self.for_loop_iterables[var_name] = iterable
@@ -403,23 +404,11 @@ class CodeGenerator(IffiVisitor):
             items = [self.visit(child) for child in ctx.expr()]
             return " ".join(items) + " list"
 
-        elif ctx.LEFT_BRACE():
-            # Słownik
-            keys = ctx.atom()[::2]
-            values = ctx.atom()[1::2]
-            pairs = [f"{self.visit(k)}: {self.visit(v)}" for k, v in zip(keys, values)]
-            return "/* map not directly supported in C: " + ", ".join(pairs) + " */"
-
-        if ctx.RANGE():
+        elif ctx.RANGE():
             start_val = self.visit(ctx.expr(0))
             end_val = self.visit(ctx.expr(1))
             items = [start_val, end_val, "range"]
             return " ".join(items)
-
-        elif ctx.LEFT_PAREN():
-            # Krotka
-            items = [self.visit(child) for child in ctx.atom()]
-            return "/* tuple: (" + ", ".join(items) + ") */"
 
         else:
             return "/* unknown data structure */"

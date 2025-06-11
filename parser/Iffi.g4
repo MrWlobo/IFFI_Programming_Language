@@ -73,10 +73,6 @@ increment_decrement
 
 print_call
     : PRINT LEFT_PAREN expr RIGHT_PAREN SEMICOLON ;
-    
-try_catch_statement
-    : T_TRY COLON T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block (T_CATCH LEFT_PAREN exception_type ID RIGHT_PAREN COLON block)+ (T_FINALLY COLON block)? T_YRT
-    ;
 
 stop_statement : T_STOP SEMICOLON ;
 
@@ -96,8 +92,6 @@ expr
     | expr POWER expr
     | expr (MULTIPLY | DIVIDE | FLOOR_DIVIDE | MODULO) expr
     | expr (PLUS | MINUS) expr
-    | ID T_IN data_structure
-    | ID T_IN ID
     | data_structure
     | ID LEFT_BRACKET expr RIGHT_BRACKET
     ;
@@ -123,18 +117,13 @@ postfix_increment_decrement
 
 data_structure
     : LEFT_BRACKET (expr (COMMA expr)*)? RIGHT_BRACKET
-    | LEFT_BRACE (expr COLON expr (COMMA expr COLON expr)*)? RIGHT_BRACE
-    | LEFT_PAREN (expr (COMMA expr)*)? RIGHT_PAREN
     | RANGE LEFT_PAREN expr COMMA expr RIGHT_PAREN
     ;
-
-// Keywords
 
 // Basic data types
 basic_data_type
     : TYPE_INT
     | TYPE_FLOAT
-//    | TYPE_DOUBLE
     | TYPE_BOOL
     | TYPE_CHAR
     | TYPE_STRING
@@ -142,25 +131,16 @@ basic_data_type
 
 TYPE_INT: 'int' | 'INT';
 TYPE_FLOAT: 'float' | 'FLOAT';
-//TYPE_DOUBLE: 'double';
 TYPE_BOOL: 'bool' | 'BOOL';
 TYPE_CHAR: 'char' | 'CHAR';
 TYPE_STRING: 'string' | 'STRING';
 
 // Advanced data types
 advanced_data_type
-    : TYPE_ARRAY
-    | TYPE_LIST
-    | TYPE_MAP
-    | TYPE_TUPLE
+    : TYPE_LIST
     ;
 
-TYPE_ARRAY: 'array' | 'ARRAY';
 TYPE_LIST: 'list' | 'LIST';
-TYPE_MAP: 'map' | 'MAP';
-TYPE_TUPLE: 'tuple' | 'TUPLE';
-
-// Range
 RANGE: 'range' | 'RANGE';
 
 // Void
@@ -182,12 +162,6 @@ T_DO: 'do' | 'DO';
 T_STOP: 'stop' | 'STOP';
 T_SKIP: 'skip' | 'SKIP';
 
-// Try-catch
-T_TRY: 'try' | 'TRY';
-T_YRT: 'yrt' | 'YRT';
-T_CATCH: 'catch' | 'CATCH';
-T_FINALLY: 'finally' | 'FINALLY';
-
 // Functions
 T_FUNC: 'func' | 'FUNC';
 T_CNUF: 'cnuf' | 'CNUF';
@@ -200,12 +174,6 @@ OR: 'or' | 'OR';
 
 // Print call
 PRINT: 'print';
-
-// Exception
-exception_type
-    : ID
-    ;
-
 
 atom
     : BOOL
@@ -250,7 +218,6 @@ ASSIGN_DIVIDE: '/=';
 
 INT: [-]?[0-9]+ ;
 FLOAT: [-]?([0-9]*[.])?[0-9]+ ;
-//DOUBLE: [-]?([0-9]*[.])?[0-9]+ ;
 BOOL: 'true' | 'false' ;
 ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 CHAR: '\'' ( '\\' . | ~['\\\r\n] ) '\'' ;

@@ -79,11 +79,6 @@ class IffiVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by IffiParser#try_catch_statement.
-    def visitTry_catch_statement(self, ctx:IffiParser.Try_catch_statementContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by IffiParser#stop_statement.
     def visitStop_statement(self, ctx:IffiParser.Stop_statementContext):
         return self.visitChildren(ctx)
@@ -141,11 +136,6 @@ class IffiVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by IffiParser#advanced_data_type.
     def visitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by IffiParser#exception_type.
-    def visitException_type(self, ctx:IffiParser.Exception_typeContext):
         return self.visitChildren(ctx)
 
 

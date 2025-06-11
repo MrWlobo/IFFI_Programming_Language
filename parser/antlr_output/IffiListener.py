@@ -134,15 +134,6 @@ class IffiListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by IffiParser#try_catch_statement.
-    def enterTry_catch_statement(self, ctx:IffiParser.Try_catch_statementContext):
-        pass
-
-    # Exit a parse tree produced by IffiParser#try_catch_statement.
-    def exitTry_catch_statement(self, ctx:IffiParser.Try_catch_statementContext):
-        pass
-
-
     # Enter a parse tree produced by IffiParser#stop_statement.
     def enterStop_statement(self, ctx:IffiParser.Stop_statementContext):
         pass
@@ -248,15 +239,6 @@ class IffiListener(ParseTreeListener):
 
     # Exit a parse tree produced by IffiParser#advanced_data_type.
     def exitAdvanced_data_type(self, ctx:IffiParser.Advanced_data_typeContext):
-        pass
-
-
-    # Enter a parse tree produced by IffiParser#exception_type.
-    def enterException_type(self, ctx:IffiParser.Exception_typeContext):
-        pass
-
-    # Exit a parse tree produced by IffiParser#exception_type.
-    def exitException_type(self, ctx:IffiParser.Exception_typeContext):
         pass
 
 

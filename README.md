@@ -49,12 +49,11 @@ Kompilator języka IFFI do C
 
 ### Złożone typy danych
 
-| Token         | Opis         | Przykład |
-|---------------|--------------|----------|
-| `TYPE_ARRAY`  | tablica      | `array`  |
-| `TYPE_LIST`   | lista        | `list`   | 
-| `TYPE_MAP`    | mapa         | `map`    |
-| `TYPE_TUPLE`  | krotka       | `tuple`  |
+| Token       | Opis                                       | Przykład |
+|-------------|--------------------------------------------|----------|
+| `TYPE_LIST` | lista                                      | `list`   |
+| `RANGE`     | lista liczb całkowitych z podanego zakresu | `range`  |
+ 
 
 ### Operatory matematyczne i logiczne
 
@@ -122,10 +121,6 @@ Kompilator języka IFFI do C
 | `T_FUNC`    | deklaracja funkcji                    | `FUNC`    |
 | `T_CNUF`    | zakończenie delaracji funkcji         | `CNUF`    |
 | `T_RETURN`  | zwrócenie wartości z funkcji          | `RETURN`  |
-| `T_TRY`     | blok potencjalnych błędów             | `TRY`     |
-| `T_YRT`     | zakończenie obsługi błędów            | `YRT`     |
-| `T_CATCH`   | obsługa wyjątków                      | `CATCH`   |
-| `T_FINALLY` | blok wykonywany po obsłudze błędów    | `FINALLY` |
 
 
 ### Inne tokeny
